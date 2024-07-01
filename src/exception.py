@@ -1,6 +1,6 @@
 #This file contains the code for handling errors/exception and giving us the details of the same, this file is common for all the project
 import sys
-from logger import logging
+from .logger import logging
 
 class CustomException(Exception):
     """ 
