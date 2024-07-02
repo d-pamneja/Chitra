@@ -1,5 +1,6 @@
 # Importing the dependencies
-from src.dependencies import *
+import pytest
+from fastapi.testclient import TestClient
 from main import app
 
 # Defining the client fixture

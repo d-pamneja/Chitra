@@ -1,6 +1,66 @@
-# This file contains the prompts which are to be sent to the Google Gemini API for comverting user query to SQL query and then fetching the results from the database.
+# This file contains the prompts which are to be sent to the Google Gemini API.
 
 prompts = [
+    """
+    You will be given a user message as input. Your task is to classify the message into one of the following categories:
+
+    \n1. True : If the message indicates a request for movie recommendations based on specific criteria like genre, actors, directors, keywords, or title similarity. If it says words like "recommend", "suggest", "show me", "movies with", "similar to", etc. This means the user is looking for movie recommendations based on specific criteria.
+
+    \n2. False :  If the message is a general comment, question, or statement related to movies but not a direct request for recommendations. This means something more abstract
+
+    Basically, the whole idea is to check whether the user is asking for a movie recommendation or not. Here are some examples to guide you:
+
+    Here are some examples to guide you:
+
+    | Message                                                                   | Category               |
+    | ------------------------------------------------------------------------ | ---------------------- |
+    | "I love sci-fi movies."                                                  | general_conversation |
+    | "What are some good comedies from the 90s?"                                | movie_query           |
+    | "Can you recommend movies with Leonardo DiCaprio?"                        | movie_query           |
+    | "I'm in the mood for something funny and heartwarming."                    | general_conversation |
+    | "What are your thoughts on the latest Marvel movie?"                      | general_conversation |
+    | "Show me some movies similar to The Matrix."                              | movie_query           |
+    | "I'm not a big fan of horror movies."                                     | general_conversation |
+    | "Can you suggest movies with strong female leads?"                         | movie_query           |
+    | "What's your favorite movie of all time?"                                 | general_conversation |
+    | "Recommend me some movies with high ratings and positive reviews."         | movie_query           |
+
+    Please note that the user's queries can vary in complexity and specificity. Be prepared to handle a wide range of requests. You will be given a query based on 
+    which you have to classify the message into one of the above categories.
+
+    You just have to return a string with either True or False, based on the classification of the input message. Do not have any " or ' in the response, or even an extra space, just the word True or False.
+    This string will be matched with a local function, so make sure to return one of the exact string as mentioned above.
+    """,
+    """
+    Here, you are given the API response back from the local movie database. You have to present the top movie recommendations to the user in the following format:
+        \t* You will be getting a list of JSONs, each of which has the following three keys : 
+            \t\t * title : The title of the movie
+            \t\t * keywords : The keywords of the movie
+            \t\t * review_summary : The review summary of the movie (basically, a summary of what the audiences generally think about the movie)
+        \t* You have to present the recommendations in the following format:
+            \t\t - You will present all titles of each movie in a numbered list.
+            \t\t - Below each title, you will present a quick summary of the movie, highlighting the keywords and the review summary. basically, you will try to justify why the movie is recommende, using these two fields. This can be a one-liner or a couple of lines, however it just has to be a quick comment on why the movie is recommended, and will the user like it.
+            
+    \nHere is an example of how you can present the recommendations to the user: (THIS IS JUST AN EXAMPLE, the actual recommendations will be different, DO NOT COPY THIS. This is just to show you how you can present the recommendations)
+        \t1. Avengers: Infinity War
+        \t\t A superhero ensemble cast with a compelling narrative and impressive action sequences. This movie is recommended for fans of the Marvel Cinematic Universe who enjoy epic battles, emotional stakes, and a touch of humor. Be warned, the ending might leave you on a cliffhanger!
+        \n
+        \t2. Spider-Man: Into the Spider-Verse
+        \t\tA groundbreaking animation style, vibrant soundtrack, and a unique take on the Spider-Man mythos. This movie is recommended for animation enthusiasts, comic book fans, and anyone who enjoys a fresh, creative approach to superhero storytelling.
+        \n
+        \t3. Wonder Woman
+        \t\tA refreshing female-led superhero film with stunning visuals and a compelling World War I setting. Recommended for those who enjoy action-packed movies with a strong female lead and a touch of romance.
+        \n
+        \t4. Incredibles 2    
+        \t\tA family-friendly animated adventure filled with humor, heart, and thrilling action. Recommended for audiences of all ages who enjoy the superhero genre and are looking for an entertaining watch. However, be aware that it might not be as original as the first film.
+        \n
+        \t5. Captain Marvel
+        \t\tA visually entertaining addition to the Marvel Cinematic Universe with a strong female protagonist. Recommended for action fans and Marvel enthusiasts. However, be prepared for a mixed bag of opinions on the plot and character development.
+        \n
+        
+    You have to present the recommendations in a similar format, ensuring that the user gets a quick overview of each movie along with the title. After all this, you can ask the user if they would like more recommendations or if they have any specific preferences they would like to explore further.
+    Basically, keep the conversation engaging and informative, and make sure the user feels excited about the movie recommendations you provide!
+    """,
     """
     You are an expert at converting English text to SQL code. Here, the SQL Database you are getting is called Movies_Database and 
     has the following columns : \n\n

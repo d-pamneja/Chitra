@@ -19,6 +19,7 @@ from fastapi.responses import JSONResponse
 from fastapi.security import OAuth2PasswordBearer
 from pydantic import BaseModel, Field
 from typing import List, Union, Dict
+import requests
 
 import pytest
 from fastapi.testclient import TestClient

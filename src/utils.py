@@ -3,16 +3,69 @@
 # Importing the required dependecnies.
 from .dependencies import *
 
+# Chitra Chatbot
+def is_movie_recommendation_query(query,prompts):
+    """
+    Function to classify the message as a question or not using the Gemini LLM model.
+    
+    Args:
+        query (str): The query to be classified.
+        prompts (list): The list of prompt templates for the LLM.
+        
+    Returns:
+        bool: The boolean value indicating if the query is a question or not.
+    """
+    try: 
+        classifier = genai.GenerativeModel(
+            model_name = "gemini-1.5-flash-latest",
+            generation_config = {
+                "temperature": 1,
+                "top_p": 0.95,
+                "top_k": 64,
+                "max_output_tokens": 8192,
+                "response_mime_type": "text/plain",
+            },
+            safety_settings =  [
+                {
+                    "category": "HARM_CATEGORY_DANGEROUS",
+                    "threshold": "BLOCK_NONE",
+                },
+                {
+                    "category": "HARM_CATEGORY_HARASSMENT",
+                    "threshold": "BLOCK_NONE",
+                },
+                {
+                    "category": "HARM_CATEGORY_HATE_SPEECH",
+                    "threshold": "BLOCK_NONE",
+                },
+                {
+                    "category": "HARM_CATEGORY_SEXUALLY_EXPLICIT",
+                    "threshold": "BLOCK_NONE",
+                },
+                {
+                    "category": "HARM_CATEGORY_DANGEROUS_CONTENT",
+                    "threshold": "BLOCK_NONE",
+                },
+            ]
+        )
 
+        response = classifier.generate_content([prompts[0],query])
+        query_type = response.text.replace('\n','').replace(';','')
+        
+        if(query_type == "True"):
+            return True
+        elif(query_type == "False"):
+            return False
+    
+    except Exception as e1:
+        raise CustomException(e1,sys)
+    
+
+# Movie Recommendation System
 keyword_data_path = "/Users/dhruv/Desktop/Machine_Learning/Projects/Chitra_Movie_Bot/CHROMA_DATABASE"
 client_key = chromadb.PersistentClient(path = keyword_data_path)
 movie_collection = client_key.get_collection("MOVIES")
 
-# movie_collection = client_key.get_collection("MOVIES")
-
-# keyword_data_path = "../Chroma_DB"
-# client_key = chromadb.PersistentClient(path = keyword_data_path)
-# movie_collection = client_key.get_collection("Movies")
 
 def find_similar_movies(movie_title, data, movie_collection, top_k=6):
     """ 
@@ -170,7 +223,7 @@ def get_gemini_response(question,prompts,database_query_based,database_key_based
         ]
         
         # First-level LLM response to determine intent
-        response_level1 = model.generate_content([prompts[0],question],safety_settings = safe)
+        response_level1 = model.generate_content([prompts[2],question],safety_settings = safe)
         
         if("SELECT" in response_level1.text):
             return response_level1.text.replace('\n', '').replace(';', '')
@@ -181,7 +234,7 @@ def get_gemini_response(question,prompts,database_query_based,database_key_based
         for query_keyword in query_based_keywords:
             if(query_keyword in question.lower()):
                 if(query_keyword == "genres" or query_keyword.lower() == "genre"):
-                    response_level2 = model.generate_content([prompts[1],response_level1.text],safety_settings = safe)
+                    response_level2 = model.generate_content([prompts[3],response_level1.text],safety_settings = safe)
                     query_genres = [genre.lower() for genre in eval(response_level2.text)]
                     
                     final_movie_titles = []
@@ -195,7 +248,7 @@ def get_gemini_response(question,prompts,database_query_based,database_key_based
                     return final_movie_titles[:10]
                 
                 elif(query_keyword.lower() == "cast" or query_keyword.lower() == "actor" or query_keyword.lower() == "actress" or query_keyword.lower() == "in it" or query_keyword.lower() == "in them"):
-                    response_level2 = model.generate_content([prompts[1],response_level1.text],safety_settings = safe)
+                    response_level2 = model.generate_content([prompts[3],response_level1.text],safety_settings = safe)
                     query_cast = [cast.lower() for cast in  eval(response_level2.text)]
                     
                     final_movie_titles = [] 
@@ -209,7 +262,7 @@ def get_gemini_response(question,prompts,database_query_based,database_key_based
                     return final_movie_titles[:10]
                 
                 elif(query_keyword.lower() == "keyword" or query_keyword.lower() == "type" or query_keyword.lower() == "kind"):
-                    response_level2 = model.generate_content([prompts[1],response_level1.text],safety_settings = safe)
+                    response_level2 = model.generate_content([prompts[3],response_level1.text],safety_settings = safe)
                     query_keywords = [keyword.lower() for keyword in eval(response_level2.text)]
                     
                     final_movie_titles = []
@@ -226,7 +279,7 @@ def get_gemini_response(question,prompts,database_query_based,database_key_based
         # Handle title-based searches from Chroma Database
         for query_keyword in title_based_keywords:
             if(query_keyword.lower() in question.lower()):
-                response_level2 = model.generate_content([prompts[1],response_level1.text],safety_settings = safe)
+                response_level2 = model.generate_content([prompts[3],response_level1.text],safety_settings = safe)
                 query_title = eval(response_level2.text)[0]
                 
                 return find_similar_movies(query_title,database_key_based,movie_collection,6)    
