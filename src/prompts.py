@@ -32,8 +32,8 @@ prompts = [
     This string will be matched with a local function, so make sure to return one of the exact string as mentioned above.
     """,
     """
-    Here, you are given the API response back from the local movie database. You have to present the top movie recommendations to the user in the following format:
-        \t* You will be getting a list of JSONs, each of which has the following three keys : 
+    As you can see, you are getting a list of MovieInfo objects, where each object contains the title, keywords, and review_summary of a movie. This is basically the API response back from the local movie database. You have to present the top movie recommendations to the user in the following format:
+        \t* You will be getting a list of MovieInfo objects, where each object has the following three keys : 
             \t\t * title : The title of the movie
             \t\t * keywords : The keywords of the movie
             \t\t * review_summary : The review summary of the movie (basically, a summary of what the audiences generally think about the movie)
@@ -58,7 +58,7 @@ prompts = [
         \t\tA visually entertaining addition to the Marvel Cinematic Universe with a strong female protagonist. Recommended for action fans and Marvel enthusiasts. However, be prepared for a mixed bag of opinions on the plot and character development.
         \n
         
-    You have to present the recommendations in a similar format, ensuring that the user gets a quick overview of each movie along with the title. After all this, you can ask the user if they would like more recommendations or if they have any specific preferences they would like to explore further.
+    In essence, you have to parse through the list to extract information about each particular movie from the list and you have to present the recommendations in a similar format, ensuring that the user gets a quick overview of each movie along with the title. After all this, you can ask the user if they would like more recommendations or if they have any specific preferences they would like to explore further.
     Basically, keep the conversation engaging and informative, and make sure the user feels excited about the movie recommendations you provide!
     """,
     """

@@ -6,10 +6,18 @@ from src.system_instructions import *
 from src.chitra import Chitra
 
 
-# Initialising the API from FastAPI
+# Initialising the API from FastAPI and APIRouter
 app = FastAPI(prefix="/api")
+movie_router = APIRouter()
 
 # Data Models for Input and Output
+class ChitraQuery(BaseModel):
+    question: str = Field(..., description="The user's query to Chitra Bot.")
+    
+class ChitraResponse(BaseModel):
+    type: str
+    data: str
+    
 class MovieQuery(BaseModel):
     question: str = Field(..., description="The user's question about movies.")
 
@@ -64,40 +72,59 @@ chitra = Chitra(
     system_instruction = system_instructions[0]
 )
 
+global_chat_history = []
+
 # Home Page
 @app.get("/")
 def home():
     return "Hello Chitra!"
 
 # Chatbot Endpoint
-@app.post("/chat")
-async def chat(query: Query):
-    """ Chatbot endpoint to handle user queries."""
-    try:
-        if not hasattr(chat, "chitra_chat_session"):
-            chat.chitra_chat_session = chitra.start_chat()
-
-        if is_movie_recommendation_query(query.question):
-            api_response = requests.post(
-                "http://127.0.0.1:8000//api/movie_query",
-                json={"question": query.question}
-            )
-
-            if api_response.status_code == 200:
-                movie_data = api_response.json()
-                chitra_response = chat.chitra_chat_session.send_message(prompts[1], movie_data) 
-                
-                return {"type": "text", "data": chitra_response.text}
-
-            else:
-                raise HTTPException(status_code=500, detail="Error fetching movie recommendations")
         
-        else:
-            chitra_response = chat.chitra_chat_session.send_message(query.question)
-            return {"type": "text", "data": chitra_response.text} 
-    except Exception as e:
-        raise CustomException(e,sys)
+@app.post("/chat", response_model=ChitraResponse)
+async def chat(query: ChitraQuery = Body(...)):
+    """Chatbot endpoint to handle user queries."""
+    
+    try:
+        if not chitra.chat_session:
+            chitra.chat_session = chitra.start_chat()
 
+        if(is_movie_recommendation_query(query.question, prompts)):
+            try:
+                movie_query = MovieQuery(question=query.question)
+                logging.info(f"Movie query: {movie_query}")
+                
+                api_response = await handle_movie_query(movie_query)
+                logging.info(f"API response: {api_response}")
+                
+                if(type(api_response) != list):
+                    raise HTTPException(status_code=500, detail=f"Error fetching movie recommendations: {api_response.text}")
+                
+                
+            except requests.exceptions.RequestException as e:
+                raise HTTPException(status_code=500, detail=f"Error fetching movie recommendations: {e}")
+
+
+            chitra_response = chitra.send_message(message = api_response,additional_context = prompts[1])
+            
+        else:
+            chitra_response = chitra.send_message(query.question)
+
+        global_chat_history.append({"user": query.question, "chitra": chitra_response.text})
+        logging.info(f"chat history appended: {global_chat_history}")
+
+        return {"type": "text", "data": chitra_response.text}
+
+    except CustomException as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Internal Server Error: {e}")
+
+
+@app.get("/chat_history", response_model=List[Dict[str, str]])
+async def get_chat_history():
+    """Returns the chat history of the Chitra bot."""
+    return global_chat_history
 
 # Movie Queries
 @app.post("/api/movie_query", response_model=List[MovieInfo])

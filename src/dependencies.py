@@ -14,7 +14,7 @@ import google.generativeai as genai
 GOOGLE_API_KEY_MOVIE_RECOMMENDER = os.getenv("GOOGLE_API_KEY_MOVIE_RECOMMENDER")
 genai.configure(api_key=GOOGLE_API_KEY_MOVIE_RECOMMENDER)
 
-from fastapi import FastAPI, Depends, HTTPException, status, Query,Body
+from fastapi import FastAPI, Depends, HTTPException, status, Query,Body, APIRouter
 from fastapi.responses import JSONResponse
 from fastapi.security import OAuth2PasswordBearer
 from pydantic import BaseModel, Field

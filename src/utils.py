@@ -224,8 +224,10 @@ def get_gemini_response(question,prompts,database_query_based,database_key_based
         
         # First-level LLM response to determine intent
         response_level1 = model.generate_content([prompts[2],question],safety_settings = safe)
+        logging.info(f"Response from LLM (Level 1): {response_level1.text}")
         
         if("SELECT" in response_level1.text):
+            logging.info("SQL Query detected.")
             return response_level1.text.replace('\n', '').replace(';', '')
         
         all_movies = database_query_based.values
@@ -235,6 +237,7 @@ def get_gemini_response(question,prompts,database_query_based,database_key_based
             if(query_keyword in question.lower()):
                 if(query_keyword == "genres" or query_keyword.lower() == "genre"):
                     response_level2 = model.generate_content([prompts[3],response_level1.text],safety_settings = safe)
+                    logging.info(f"Response from LLM (Level 2): {response_level2.text}")
                     query_genres = [genre.lower() for genre in eval(response_level2.text)]
                     
                     final_movie_titles = []
@@ -249,6 +252,7 @@ def get_gemini_response(question,prompts,database_query_based,database_key_based
                 
                 elif(query_keyword.lower() == "cast" or query_keyword.lower() == "actor" or query_keyword.lower() == "actress" or query_keyword.lower() == "in it" or query_keyword.lower() == "in them"):
                     response_level2 = model.generate_content([prompts[3],response_level1.text],safety_settings = safe)
+                    logging.info(f"Response from LLM (Level 2): {response_level2.text}")
                     query_cast = [cast.lower() for cast in  eval(response_level2.text)]
                     
                     final_movie_titles = [] 
@@ -263,6 +267,7 @@ def get_gemini_response(question,prompts,database_query_based,database_key_based
                 
                 elif(query_keyword.lower() == "keyword" or query_keyword.lower() == "type" or query_keyword.lower() == "kind"):
                     response_level2 = model.generate_content([prompts[3],response_level1.text],safety_settings = safe)
+                    logging.info(f"Response from LLM (Level 2): {response_level2.text}")
                     query_keywords = [keyword.lower() for keyword in eval(response_level2.text)]
                     
                     final_movie_titles = []
@@ -280,6 +285,7 @@ def get_gemini_response(question,prompts,database_query_based,database_key_based
         for query_keyword in title_based_keywords:
             if(query_keyword.lower() in question.lower()):
                 response_level2 = model.generate_content([prompts[3],response_level1.text],safety_settings = safe)
+                logging.info(f"Response from LLM (Level 2): {response_level2.text}")
                 query_title = eval(response_level2.text)[0]
                 
                 return find_similar_movies(query_title,database_key_based,movie_collection,6)    

@@ -23,11 +23,22 @@ class Chitra:
             safety_settings=safety_settings,
             system_instruction=system_instruction
         )
+        # self.chat_history = []
         self.chat_session = self.model.start_chat()
-
-    def send_message(self, message):
+        
+    def start_chat(self):
         """
-        A method to send a message to the GenerativeAI model.
+        Starts a new chat session with the Gemini model, in case the chat session is not already started.
+        
+        Returns:
+        The chat session with the Gemini model.
+        """
+        self.chat_session = self.model.start_chat()
+        return self.chat_session
+
+    def send_message(self, message, additional_context = None):  
+        """
+        A method to send a message to the GenerativeAI model, in the current chat session
         
         Parameters:
         1. message : str
@@ -36,4 +47,18 @@ class Chitra:
         Returns:
         The response from the Gemini model.
         """
-        return self.chat_session.send_message(message)
+        if self.chat_session is None:
+            raise ValueError("Chat session not started. Call start_chat() first.")
+        
+        
+        if additional_context:
+            full_message = f"Instruction prompt :\n{additional_context} \n\n{message}\n\n "
+        else:
+            full_message = message
+            
+        response = self.chat_session.send_message(full_message)
+        # self.chat_history.append(
+        #     {"user": message, "chitra": response.text}
+        # )
+
+        return response
