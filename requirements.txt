@@ -175,4 +175,5 @@ Werkzeug==3.0.3
 wrapt==1.16.0
 wsproto==1.2.0
 yarl==1.9.4
+youtube-transcript-api==0.6.2
 zipp==3.19.2

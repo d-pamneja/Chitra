@@ -25,6 +25,14 @@ class MovieInfo(BaseModel):
     title: str
     keywords: str = None
     review_summary: str = None
+    
+class MovieDiscussionQuery(BaseModel):
+    question: str = Field(..., description="The user's question about movies.")
+    movie_title: str = Field(..., description="The title of the movie being discussed.")
+    
+class MovieDiscussionResponse(BaseModel):
+    type: str
+    data: str
 
 
 # Load Data (ChromaDB and SQLite)
@@ -74,6 +82,43 @@ chitra = Chitra(
 
 global_chat_history = []
 
+
+# Create the Movie Discussion Bot Instance
+movie_discussion = genai.GenerativeModel(
+    model_name = "gemini-1.5-flash-latest",
+    generation_config = {
+        "temperature": 1,
+        "top_p": 0.95,
+        "top_k": 64,
+        "max_output_tokens": 8192,
+        "response_mime_type": "text/plain"
+    },
+    safety_settings = [
+        {
+            "category": "HARM_CATEGORY_DANGEROUS",
+            "threshold": "BLOCK_NONE",
+        },
+        {
+            "category": "HARM_CATEGORY_HARASSMENT",
+            "threshold": "BLOCK_NONE",
+        },
+        {
+            "category": "HARM_CATEGORY_HATE_SPEECH",
+            "threshold": "BLOCK_NONE",
+        },
+        {
+            "category": "HARM_CATEGORY_SEXUALLY_EXPLICIT",
+            "threshold": "BLOCK_NONE",
+        },
+        {
+            "category": "HARM_CATEGORY_DANGEROUS_CONTENT",
+            "threshold": "BLOCK_NONE",
+        },
+    ],
+    system_instruction = system_instructions[1]
+)
+
+
 # Home Page
 @app.get("/")
 def home():
@@ -81,10 +126,9 @@ def home():
 
 # Chatbot Endpoint
         
-@app.post("/chat", response_model=ChitraResponse)
+@app.post("/api/chat", response_model=ChitraResponse)
 async def chat(query: ChitraQuery = Body(...)):
     """Chatbot endpoint to handle user queries."""
-    
     try:
         if not chitra.chat_session:
             chitra.chat_session = chitra.start_chat()
@@ -106,7 +150,22 @@ async def chat(query: ChitraQuery = Body(...)):
 
 
             chitra_response = chitra.send_message(message = api_response,additional_context = prompts[1])
+        elif(is_movie_discussion_query(query.question, prompts)):
+            try:
+                movie_title = get_movie_title(query.question,prompts)
+                movie_discussion_query = MovieDiscussionQuery(question=query.question, movie_title = movie_title)
+                logging.info(f"Movie discussion query: {movie_discussion_query}")
+                
+                api_response = await handle_movie_discussion(movie_discussion_query)
+                logging.info(f"API response: {api_response}")
+                
+                if(type(api_response) != dict):
+                    raise HTTPException(status_code=500, detail=f"Error fetching movie discussion response: {api_response.text}")
+                
+            except requests.exceptions.RequestException as e:
+                raise HTTPException(status_code=500, detail=f"Error fetching movie discussion response: {e}")
             
+            chitra_response = chitra.send_message(message = api_response,additional_context = prompts[1])  
         else:
             chitra_response = chitra.send_message(query.question)
 
@@ -137,3 +196,13 @@ async def handle_movie_query(query: MovieQuery = Body(...)):
 
     except Exception as e1:
         raise CustomException(e1,sys)
+
+# Movie Discussions
+@app.post("/api/movie_discussion", response_model=MovieDiscussionResponse)
+async def handle_movie_discussion(query: MovieDiscussionQuery = Body(...)):
+    """Processes movie discussion queries, returning a response from the Chitra bot."""
+    try:
+        response = get_movie_discussion_response(query.movie_title, query.question, movie_discussion,database)
+        return {"type": "text", "data": response}
+    except Exception as e:
+        raise CustomException(e,sys)

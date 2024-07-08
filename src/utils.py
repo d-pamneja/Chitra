@@ -293,3 +293,165 @@ def get_gemini_response(question,prompts,database_query_based,database_key_based
     except Exception as e1:
         raise CustomException(e1,sys)
     
+# Movie Discussion System
+def is_movie_discussion_query(query,prompts):
+    """
+    Function to classify the message as a discussion question or not using the Gemini LLM model.
+    
+    Args:
+        query (str): The query to be classified.
+        prompts (list): The list of prompt templates for the LLM.
+        
+    Returns:
+        bool: The boolean value indicating if the query is a discussion question or not
+    """
+    try: 
+        classifier = genai.GenerativeModel(
+            model_name = "gemini-1.5-flash-latest",
+            generation_config = {
+                "temperature": 1,
+                "top_p": 0.95,
+                "top_k": 64,
+                "max_output_tokens": 8192,
+                "response_mime_type": "text/plain",
+            },
+            safety_settings =  [
+                {
+                    "category": "HARM_CATEGORY_DANGEROUS",
+                    "threshold": "BLOCK_NONE",
+                },
+                {
+                    "category": "HARM_CATEGORY_HARASSMENT",
+                    "threshold": "BLOCK_NONE",
+                },
+                {
+                    "category": "HARM_CATEGORY_HATE_SPEECH",
+                    "threshold": "BLOCK_NONE",
+                },
+                {
+                    "category": "HARM_CATEGORY_SEXUALLY_EXPLICIT",
+                    "threshold": "BLOCK_NONE",
+                },
+                {
+                    "category": "HARM_CATEGORY_DANGEROUS_CONTENT",
+                    "threshold": "BLOCK_NONE",
+                },
+            ]
+        )
+
+        response = classifier.generate_content([prompts[4],query])
+        query_type = response.text.replace('\n','').replace(';','')
+        
+        if(query_type == "True"):
+            return True
+        elif(query_type == "False"):
+            return False
+    
+    except Exception as e1:
+        raise CustomException(e1,sys)
+    
+def get_movie_title(query,prompts):
+    """
+    Function to extract the movie title from the discussion question using the Gemini LLM model.
+    
+    Args:
+        query (str): The query to be classified.
+        prompts (list): The list of prompt templates for the LLM.
+        
+    Returns:
+        str: The title of the movie.
+    """
+    try: 
+        classifier = genai.GenerativeModel(
+            model_name = "gemini-1.5-flash-latest",
+            generation_config = {
+                "temperature": 1,
+                "top_p": 0.95,
+                "top_k": 64,
+                "max_output_tokens": 8192,
+                "response_mime_type": "text/plain",
+            },
+            safety_settings =  [
+                {
+                    "category": "HARM_CATEGORY_DANGEROUS",
+                    "threshold": "BLOCK_NONE",
+                },
+                {
+                    "category": "HARM_CATEGORY_HARASSMENT",
+                    "threshold": "BLOCK_NONE",
+                },
+                {
+                    "category": "HARM_CATEGORY_HATE_SPEECH",
+                    "threshold": "BLOCK_NONE",
+                },
+                {
+                    "category": "HARM_CATEGORY_SEXUALLY_EXPLICIT",
+                    "threshold": "BLOCK_NONE",
+                },
+                {
+                    "category": "HARM_CATEGORY_DANGEROUS_CONTENT",
+                    "threshold": "BLOCK_NONE",
+                },
+            ]
+        )
+
+        response = classifier.generate_content([prompts[5],query])
+        movie_title = response.text.replace('\n','').replace(';','')
+        
+        return movie_title
+    
+    except Exception as e1:
+        raise CustomException(e1,sys)
+    
+def get_movie_details(movie_title,db):
+    """
+    Function to get the movie details from the SQL Database.
+    
+    Args:
+        movie_title (str): The title of the movie.
+        db (str): The path to the database.
+        
+    Returns:
+        list: The list of dictionaries containing the movie details.
+    """
+    try:
+        con = sqlite3.connect(db)
+        cur = con.cursor()
+        SQL_Query = f"SELECT m.title, m.genres ,m.keywords, m.review_summary, m.synopsis, m.trailers_info FROM Movies_Database AS m WHERE m.title = '{movie_title}'"
+        cur.execute(SQL_Query)
+        
+        rows = cur.fetchall()
+
+        column_names = [description[0] for description in cur.description]
+        list_of_dicts = [dict(zip(column_names, row)) for row in rows]
+
+        con.close()
+
+        list_of_dicts if type(list_of_dicts) == list else []
+        return list_of_dicts
+    except Exception as e1:
+        raise CustomException(e1,sys)
+    
+    
+def get_movie_discussion_response(movie_title, user_query,model,database):
+    """
+    Function to generate the response for a movie discussion query.
+    
+    Args:
+        movie_title (str): The title of the movie being discussed.
+        user_query (str): The user's query about the movie.
+        model (genai.GenerativeModel): The GenerativeAI model instance.
+        database (str): The path to the database.
+    """
+    try:
+        list_of_dicts = get_movie_details(movie_title,database)
+        
+        if(len(list_of_dicts) == 0):
+            return "Sorry, I couldn't find any information about the movie. Please try again with a different movie title."
+        
+        prompt = f"The information about the movie is : \n\n{list_of_dicts}"
+        response = model.generate_content([prompt,user_query])
+        return response.text
+    
+    except Exception as e1:
+        raise CustomException(e1,sys)

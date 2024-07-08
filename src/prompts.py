@@ -257,5 +257,59 @@ prompts = [
     MAKE SURE IT IS A STRING OUTPUT ONLY, AS YOUR RESPONSE WILL BE WORKED ON LATER ON PYTHON FUNCTIONS.
     Also, make sure that the string output does not have ``` in the beginning or the end of your answer. Also, the word "STRING" or any
     other words should not be present in your output. Just the commands or output as you have been shown above in the examples.
+    """,
+    """
+    You will be given a user message as input. Your task is to classify the message into one of the following categories:
+
+    \n1. True : If the message indicates a request for a movie discussion or opinion on a specific movie. If it says words like "thoughts on", "opinion on", "review of", "discuss", "what do you think about", "your viws" etc. This means the user is looking for a discussion or opinion on a specific movie.
+    \n2. False :  If the message is a general comment, question, or statement related to movies but not a direct request for a movie discussion. This means something more generic or specific in terms of movies, or even a specifc query about a movie based on some criteria. It should not be a direct request for a movie discussion, or something which asks for a review or opinion on a movie.
+
+    Basically, the whole idea is to check whether the user is asking for a movie discussion or not. Here are some examples to guide you:
+
+    Here are some examples to guide you:
+
+    | Message                                                                                                                         | Category               |
+    | ------------------------------------------------------------------------------------------------------------------------        | ---------------------- |
+    | "I love sci-fi movies."                                                                                                        | general_conversation |
+    | "I think the animation style of the movie was unique and visually stunning. What do you think?"                                | movie_discussion_query |
+    | "What do you think the movie say about the theme of identity, self-discovery and sacrifice?                                    | movie_discussion_query |
+    | "I'm in the mood for something funny and heartwarming."                                                                          | general_conversation |
+    | "What are your thoughts on the latest Marvel movie?"                                                                            | general_conversation |
+    | "I think the inclusion of Iron Man was a bit too much in the movie. It did'nt let Spiderman shine on his own. Your views?"      | movie_discussion_query |
+    | "I'm not a big fan of horror movies."                                                                                           | general_conversation |
+    | "Although, I think Tom holland as Peter Parker was quite decent. How did the fans react to it?"                                 | movie_discussion_query |
+    | "What's your favorite movie of all time?"                                                                                       | general_conversation |
+    | "What were your thoughts in the way they handled Thor's depression and PTSD in Avengers: Endgame"                               | movie_discussion_query |
+    | "How were the reviews of Venom? How did fans react to the movie?"                                                               | movie_discussion_query |
+    | "Discuss the themes and plots in Fast and the Furious"                                                                         | movie_discussion_query |
+
+    Please note that the user's queries can vary in complexity and specificity. Be prepared to handle a wide range of requests. You will be given a query based on 
+    which you have to classify the message into one of the above categories.
+
+    You just have to return a string with either True or False, based on the classification of the input message. Do not have any " or ' in the response, or even an extra space, just the word True or False.
+    This string will be matched with a local function, so make sure to return one of the exact string as mentioned above.
+    """,
+    """
+    You are an expert in extracting the movie title from a user query. Here, you will be given a user query as input, and you have to extract the movie title from it. The movie title can be any movie name, and it can be present anywhere in the query. You have to extract the movie title and return it as a string. Here are some examples to guide you:
+    
+    \t1. "Discuss the themes and plots in Fast and the Furious"
+    \tAns. Fast and the Furious
+    
+    \t2. "What were your thoughts in the way they handled Thor's depression and PTSD in Avengers: Endgame"
+    \tAns. Avengers: Endgame
+    
+    \t3. "How were the reviews of Venom? How did fans react to the movie?"
+    \tAns. Venom
+    
+    \t4. "I think the inclusion of Iron-Man was a bit too much in the movie Spider-Man: Homecoming. It did'nt let Spiderman shine on his own. Your views?"
+    \tAns. SpiderMan: Homecoming
+    
+    \t5. "I think the animation style of the movie was unique and visually stunning in Cars 3. What do you think?"
+    \tAns. Cars 3
+    
+    \t6. "What do you think the movie say about the theme of sacrifice in The Dark Knight?"
+    \tAns. The Dark Knight
+    
+    Now, make sure you extract the movie name correctly, and return it as a string. The movie name should not have any extra spaces or characters, and should be exactly the same as the movie name in the query. Also, make sure that the movie name does not have any ``` in the beginning or the end of your answer, and it should'nt even have "" anywhere in the beginning or end of the answer.
     """
 ]
