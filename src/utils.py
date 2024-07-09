@@ -362,7 +362,7 @@ def get_movie_title(query,prompts):
         str: The title of the movie.
     """
     try: 
-        classifier = genai.GenerativeModel(
+        title_extractor = genai.GenerativeModel(
             model_name = "gemini-1.5-flash-latest",
             generation_config = {
                 "temperature": 1,
@@ -395,10 +395,12 @@ def get_movie_title(query,prompts):
             ]
         )
 
-        response = classifier.generate_content([prompts[5],query])
+        response = title_extractor.generate_content([prompts[5],query])
         movie_title = response.text.replace('\n','').replace(';','')
+        movie_title = re.sub(r"\s+$", "", response.text)  
+        logging.info(f"Movie title extracted: {movie_title}")
         
-        return movie_title
+        return movie_title.strip()
     
     except Exception as e1:
         raise CustomException(e1,sys)
@@ -421,6 +423,7 @@ def get_movie_details(movie_title,db):
         cur.execute(SQL_Query)
         
         rows = cur.fetchall()
+        logging.info(f"Rows: {rows}")
 
         column_names = [description[0] for description in cur.description]
         list_of_dicts = [dict(zip(column_names, row)) for row in rows]
@@ -451,6 +454,7 @@ def get_movie_discussion_response(movie_title, user_query,model,database):
         
         prompt = f"The information about the movie is : \n\n{list_of_dicts}"
         response = model.generate_content([prompt,user_query])
+        logging.info(f"Response from LLM: {response.text}")
         return response.text
     
     except Exception as e1:

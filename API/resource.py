@@ -160,12 +160,13 @@ async def chat(query: ChitraQuery = Body(...)):
                 logging.info(f"API response: {api_response}")
                 
                 if(type(api_response) != dict):
-                    raise HTTPException(status_code=500, detail=f"Error fetching movie discussion response: {api_response.text}")
+                    raise HTTPException(status_code=500, detail=f"Error fetching movie discussion response: {api_response}")
                 
             except requests.exceptions.RequestException as e:
                 raise HTTPException(status_code=500, detail=f"Error fetching movie discussion response: {e}")
             
-            chitra_response = chitra.send_message(message = api_response,additional_context = prompts[1])  
+            # chitra_response = {"type": "text", "text": api_response["data"]}
+            chitra_response = chitra.send_message(message = api_response,additional_context = prompts[1])
         else:
             chitra_response = chitra.send_message(query.question)
 
@@ -203,6 +204,7 @@ async def handle_movie_discussion(query: MovieDiscussionQuery = Body(...)):
     """Processes movie discussion queries, returning a response from the Chitra bot."""
     try:
         response = get_movie_discussion_response(query.movie_title, query.question, movie_discussion,database)
+        logging.info(f"Movie discussion response: {response}")
         return {"type": "text", "data": response}
     except Exception as e:
         raise CustomException(e,sys)

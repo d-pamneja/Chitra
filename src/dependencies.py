@@ -9,6 +9,7 @@ load_dotenv()
 import pandas as pd
 import chromadb
 import sqlite3
+import re
 
 import google.generativeai as genai
 GOOGLE_API_KEY_MOVIE_RECOMMENDER = os.getenv("GOOGLE_API_KEY_MOVIE_RECOMMENDER")

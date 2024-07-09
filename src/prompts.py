@@ -262,26 +262,31 @@ prompts = [
     You will be given a user message as input. Your task is to classify the message into one of the following categories:
 
     \n1. True : If the message indicates a request for a movie discussion or opinion on a specific movie. If it says words like "thoughts on", "opinion on", "review of", "discuss", "what do you think about", "your viws" etc. This means the user is looking for a discussion or opinion on a specific movie.
-    \n2. False :  If the message is a general comment, question, or statement related to movies but not a direct request for a movie discussion. This means something more generic or specific in terms of movies, or even a specifc query about a movie based on some criteria. It should not be a direct request for a movie discussion, or something which asks for a review or opinion on a movie.
+    \n2. False :  If the message is a general comment, question, or statement related to movies but not a direct request for a movie discussion. This means something more generic or specific in terms of movies, or even a specifc query about a movie based on some criteria. It should not be a direct request for a movie discussion, or something which asks for a review or your opinion on a movie.
 
-    Basically, the whole idea is to check whether the user is asking for a movie discussion or not. Here are some examples to guide you:
+    Basically, the whole idea is to check whether the user is asking for a movie discussion or not. If they ask something relating to the plot/synopsis and it's summary, or the trailer, it is implied they want to "discuss" the movie and hence, it will be a movie disucssion query i.e. True. Here are some examples to guide you:
 
     Here are some examples to guide you:
 
     | Message                                                                                                                         | Category               |
     | ------------------------------------------------------------------------------------------------------------------------        | ---------------------- |
-    | "I love sci-fi movies."                                                                                                        | general_conversation |
+    | "I love sci-fi movies."                                                                                                        | other_query_type |
     | "I think the animation style of the movie was unique and visually stunning. What do you think?"                                | movie_discussion_query |
     | "What do you think the movie say about the theme of identity, self-discovery and sacrifice?                                    | movie_discussion_query |
-    | "I'm in the mood for something funny and heartwarming."                                                                          | general_conversation |
-    | "What are your thoughts on the latest Marvel movie?"                                                                            | general_conversation |
+    | "I'm in the mood for something funny and heartwarming."                                                                          | other_query_type |
+    | "What are your thoughts on the latest Marvel movie?"                                                                            | other_query_type |
     | "I think the inclusion of Iron Man was a bit too much in the movie. It did'nt let Spiderman shine on his own. Your views?"      | movie_discussion_query |
-    | "I'm not a big fan of horror movies."                                                                                           | general_conversation |
+    | "I'm not a big fan of horror movies."                                                                                           | other_query_type |
     | "Although, I think Tom holland as Peter Parker was quite decent. How did the fans react to it?"                                 | movie_discussion_query |
-    | "What's your favorite movie of all time?"                                                                                       | general_conversation |
+    | "What's your favorite movie of all time?"                                                                                       | other_query_type |
     | "What were your thoughts in the way they handled Thor's depression and PTSD in Avengers: Endgame"                               | movie_discussion_query |
     | "How were the reviews of Venom? How did fans react to the movie?"                                                               | movie_discussion_query |
+    | "Show me some movies similar to Venom"                                                                                         | other_query_type |
     | "Discuss the themes and plots in Fast and the Furious"                                                                         | movie_discussion_query |
+    | "summarise the plot of Avengers: Endgame for me"                                                                               | movie_discussion_query |
+    | "Did they show the same traits of comedy in the trailer of Thor: Ragnarok?"                                                    | movie_discussion_query |
+
+            
 
     Please note that the user's queries can vary in complexity and specificity. Be prepared to handle a wide range of requests. You will be given a query based on 
     which you have to classify the message into one of the above categories.
@@ -310,6 +315,13 @@ prompts = [
     \t6. "What do you think the movie say about the theme of sacrifice in The Dark Knight?"
     \tAns. The Dark Knight
     
-    Now, make sure you extract the movie name correctly, and return it as a string. The movie name should not have any extra spaces or characters, and should be exactly the same as the movie name in the query. Also, make sure that the movie name does not have any ``` in the beginning or the end of your answer, and it should'nt even have "" anywhere in the beginning or end of the answer.
+    \t7. "I really like the comedy style in Thor: Ragnarok, although how did you feel about that?"
+    \tAns. Thor: Ragnarok
+    
+    \t8. "I think the movie was a bit too long in The Lord of the Rings: The Return of the King. What do you think?"
+    \tAns. The Lord of the Rings: The Return of the King
+    
+    \n\nAs you can see, the movie title can be present anywhere in the query, and it can be followed by a colon, a full stop, or a comma. Even can be present in the middle of the query. You need to be smart in extracting the movie name from the query.
+    Now, make sure you extract the movie name correctly, and return it **as a string with no extra spaces or characters before or after the title**. It should be exactly the same as the movie name in the query, without any surrounding characters or quotes. 
     """
 ]
