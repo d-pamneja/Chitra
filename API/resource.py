@@ -152,7 +152,12 @@ async def chat(query: ChitraQuery = Body(...)):
             chitra_response = chitra.send_message(message = api_response,additional_context = prompts[1])
         elif(is_movie_discussion_query(query.question, prompts)):
             try:
-                movie_title = get_movie_title(query.question,prompts)
+                movie_title = get_movie_title(query.question, prompts, chitra.context_movie_title)
+
+                if(movie_title != chitra.context_movie_title and is_valid_movie(movie_title)):
+                    chitra.context_movie_title = movie_title
+
+                
                 movie_discussion_query = MovieDiscussionQuery(question=query.question, movie_title = movie_title)
                 logging.info(f"Movie discussion query: {movie_discussion_query}")
                 
@@ -165,7 +170,6 @@ async def chat(query: ChitraQuery = Body(...)):
             except requests.exceptions.RequestException as e:
                 raise HTTPException(status_code=500, detail=f"Error fetching movie discussion response: {e}")
             
-            # chitra_response = {"type": "text", "text": api_response["data"]}
             chitra_response = chitra.send_message(message = api_response,additional_context = prompts[1])
         else:
             chitra_response = chitra.send_message(query.question)
@@ -185,6 +189,11 @@ async def chat(query: ChitraQuery = Body(...)):
 async def get_chat_history():
     """Returns the chat history of the Chitra bot."""
     return global_chat_history
+
+@app.get("/current_movie", response_model=str)
+async def get_current_movie():
+    """Returns the current movie being discussed by the Chitra bot."""
+    return chitra.context_movie_title or "No movie currently being discussed"
 
 # Movie Queries
 @app.post("/api/movie_query", response_model=List[MovieInfo])

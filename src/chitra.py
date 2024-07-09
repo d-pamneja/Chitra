@@ -23,7 +23,7 @@ class Chitra:
             safety_settings=safety_settings,
             system_instruction=system_instruction
         )
-        # self.chat_history = []
+        self.context_movie_title = None
         self.chat_session = self.model.start_chat()
         
     def start_chat(self):
@@ -57,8 +57,5 @@ class Chitra:
             full_message = message
             
         response = self.chat_session.send_message(full_message)
-        # self.chat_history.append(
-        #     {"user": message, "chitra": response.text}
-        # )
 
         return response

@@ -296,7 +296,7 @@ prompts = [
     """,
     """
     You are an expert in extracting the movie title from a user query. Here, you will be given a user query as input, and you have to extract the movie title from it. The movie title can be any movie name, and it can be present anywhere in the query. You have to extract the movie title and return it as a string. Here are some examples to guide you:
-    
+    \n
     \t1. "Discuss the themes and plots in Fast and the Furious"
     \tAns. Fast and the Furious
     
@@ -322,6 +322,8 @@ prompts = [
     \tAns. The Lord of the Rings: The Return of the King
     
     \n\nAs you can see, the movie title can be present anywhere in the query, and it can be followed by a colon, a full stop, or a comma. Even can be present in the middle of the query. You need to be smart in extracting the movie name from the query.
+    However, there is an edge case, if any given query DOES NOT have a movie title in it, you have to return "None" as the output.     
+    Basically, wherever you cannot find a movie title, just give the string "None" as the output. This is to ensure that you are able to handle the edge cases as well.
     Now, make sure you extract the movie name correctly, and return it **as a string with no extra spaces or characters before or after the title**. It should be exactly the same as the movie name in the query, without any surrounding characters or quotes. 
     """
 ]

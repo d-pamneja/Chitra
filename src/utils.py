@@ -350,18 +350,19 @@ def is_movie_discussion_query(query,prompts):
     except Exception as e1:
         raise CustomException(e1,sys)
     
-def get_movie_title(query,prompts):
+def get_movie_title(query,prompts,context_movie_title=None):
     """
     Function to extract the movie title from the discussion question using the Gemini LLM model.
     
     Args:
         query (str): The query to be classified.
         prompts (list): The list of prompt templates for the LLM.
+        context_movie_title (str): The context movie title, by default None.
         
     Returns:
         str: The title of the movie.
     """
-    try: 
+    try:         
         title_extractor = genai.GenerativeModel(
             model_name = "gemini-1.5-flash-latest",
             generation_config = {
@@ -400,10 +401,29 @@ def get_movie_title(query,prompts):
         movie_title = re.sub(r"\s+$", "", response.text)  
         logging.info(f"Movie title extracted: {movie_title}")
         
-        return movie_title.strip()
+        if(movie_title == "None" or movie_title == "none" or movie_title == "" or movie_title == " "):
+            return context_movie_title
+        else:
+            return movie_title.strip()
     
     except Exception as e1:
         raise CustomException(e1,sys)
+    
+    
+def is_valid_movie(movie_title):
+    """
+    Checks if the given movie title exists in the database.
+    
+    Args:
+        movie_title (str): The title of the movie.
+        
+    Returns:
+        bool: The boolean value indicating if the movie title exists in the database or not
+    """
+    try:
+        return database_query_based['title'].str.contains(movie_title).any()
+    except:
+        return False
     
 def get_movie_details(movie_title,db):
     """
