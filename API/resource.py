@@ -125,37 +125,56 @@ def home():
     return "Hello Chitra!"
 
 # Chatbot Endpoint
-        
 @app.post("/api/chat", response_model=ChitraResponse)
 async def chat(query: ChitraQuery = Body(...)):
     """Chatbot endpoint to handle user queries."""
     try:
-        if not chitra.chat_session:
+        if(not chitra.chat_session):
             chitra.chat_session = chitra.start_chat()
+            
+        if(not query.question): 
+            raise HTTPException(status_code=400, detail="Query cannot be empty")
 
         if(is_movie_recommendation_query(query.question, prompts)):
             try:
+                movie_title = get_movie_title(query.question, prompts, chitra.context_movie_title)
+                
+                if(not movie_title or not is_valid_movie(movie_title)):
+                    if(not chitra.context_movie_title):
+                        raise HTTPException(status_code=400, detail="I'm not sure which movie you're referring to. Could you please provide the full movie title?")
+                    else:
+                        movie_title = chitra.context_movie_title
+                else:
+                    if(movie_title != chitra.context_movie_title):
+                        chitra.context_movie_title = movie_title
+                    
                 movie_query = MovieQuery(question=query.question)
                 logging.info(f"Movie query: {movie_query}")
                 
                 api_response = await handle_movie_query(movie_query)
                 logging.info(f"API response: {api_response}")
                 
-                if(type(api_response) != list):
-                    raise HTTPException(status_code=500, detail=f"Error fetching movie recommendations: {api_response.text}")
-                
+                if(not isinstance(api_response, list) or not api_response): 
+                    raise HTTPException(status_code=500, detail="Error fetching or processing movie recommendations")               
                 
             except requests.exceptions.RequestException as e:
-                raise HTTPException(status_code=500, detail=f"Error fetching movie recommendations: {e}")
+                raise HTTPException(status_code=503, detail=f"Service Unavailable: {e}")
+            except CustomException as e: 
+                raise HTTPException(status_code=400, detail=str(e)) 
 
 
-            chitra_response = chitra.send_message(message = api_response,additional_context = prompts[1])
         elif(is_movie_discussion_query(query.question, prompts)):
             try:
                 movie_title = get_movie_title(query.question, prompts, chitra.context_movie_title)
-
-                if(movie_title != chitra.context_movie_title and is_valid_movie(movie_title)):
-                    chitra.context_movie_title = movie_title
+                    
+                if(not movie_title or not is_valid_movie(movie_title)):
+                    if(not chitra.context_movie_title):
+                        raise HTTPException(status_code=400, detail="I'm not sure which movie you're referring to. Could you please provide the full movie title?")
+                    else:
+                        movie_title = chitra.context_movie_title
+                else:
+                    if(movie_title != chitra.context_movie_title):
+                        chitra.context_movie_title = movie_title
 
                 
                 movie_discussion_query = MovieDiscussionQuery(question=query.question, movie_title = movie_title)
@@ -164,19 +183,26 @@ async def chat(query: ChitraQuery = Body(...)):
                 api_response = await handle_movie_discussion(movie_discussion_query)
                 logging.info(f"API response: {api_response}")
                 
-                if(type(api_response) != dict):
-                    raise HTTPException(status_code=500, detail=f"Error fetching movie discussion response: {api_response}")
-                
-            except requests.exceptions.RequestException as e:
-                raise HTTPException(status_code=500, detail=f"Error fetching movie discussion response: {e}")
+                if(not isinstance(api_response, dict) or not api_response): 
+                    raise HTTPException(status_code=500, detail="Error fetching or processing movie recommendations")   
             
-            chitra_response = chitra.send_message(message = api_response,additional_context = prompts[1])
+            except requests.exceptions.RequestException as e:
+                raise HTTPException(status_code=503, detail=f"Service Unavailable: {e}")
+            except CustomException as e: 
+                raise HTTPException(status_code=400, detail=str(e)) 
+            
         else:
-            chitra_response = chitra.send_message(query.question)
+            chitra.context_movie_title = None
+            try:
+                chitra_response = chitra.send_message(query.question)
+            except requests.exceptions.RequestException as e:
+                raise HTTPException(status_code=503, detail=f"Service Unavailable: {e}")
+            except CustomException as e: 
+                raise HTTPException(status_code=400, detail=str(e)) 
 
+
+        chitra_response = chitra.send_message(message = api_response,additional_context = prompts[1])
         global_chat_history.append({"user": query.question, "chitra": chitra_response.text})
-        logging.info(f"chat history appended: {global_chat_history}")
-
         return {"type": "text", "data": chitra_response.text}
 
     except CustomException as e:
@@ -187,13 +213,29 @@ async def chat(query: ChitraQuery = Body(...)):
 
 @app.get("/chat_history", response_model=List[Dict[str, str]])
 async def get_chat_history():
-    """Returns the chat history of the Chitra bot."""
+    """
+    Returns the chat history of the Chitra bot.
+
+    Raises:
+        HTTPException (404 Not Found): If there is no chat history available.
+    """
+    if not global_chat_history:  
+        raise HTTPException(status_code=404, detail="No chat history available.")
+
     return global_chat_history
 
 @app.get("/current_movie", response_model=str)
 async def get_current_movie():
-    """Returns the current movie being discussed by the Chitra bot."""
-    return chitra.context_movie_title or "No movie currently being discussed"
+    """
+    Returns the current movie being discussed by the Chitra bot.
+
+    Raises:
+        HTTPException (404 Not Found): If no movie is being discussed.
+    """
+    if chitra.context_movie_title is None:  
+        raise HTTPException(status_code=404, detail="No movie currently being discussed.")
+
+    return chitra.context_movie_title
 
 # Movie Queries
 @app.post("/api/movie_query", response_model=List[MovieInfo])
@@ -201,11 +243,19 @@ async def handle_movie_query(query: MovieQuery = Body(...)):
     """Processes movie queries, returning recommendations or SQL results."""
     try:
         result = get_gemini_response(query.question, prompts, database_query_based, database_key_based, movie_collection)
+        if(result is None):  
+            raise HTTPException(status_code=400, detail="No valid movie query detected in the question.")
+
         processed_results = process_sql_query(result, database)
+        if(not processed_results):  
+            raise HTTPException(status_code=404, detail="No movie recommendations found for the query.")
+
         return [MovieInfo(**movie) for movie in processed_results]
 
-    except Exception as e1:
-        raise CustomException(e1,sys)
+    except Exception as e:
+        logging.error(f"Error in handle_movie_query: {e}")
+        raise HTTPException(status_code=500, detail=f"Internal Server Error: {e}")
+
 
 # Movie Discussions
 @app.post("/api/movie_discussion", response_model=MovieDiscussionResponse)
@@ -213,7 +263,13 @@ async def handle_movie_discussion(query: MovieDiscussionQuery = Body(...)):
     """Processes movie discussion queries, returning a response from the Chitra bot."""
     try:
         response = get_movie_discussion_response(query.movie_title, query.question, movie_discussion,database)
+        if(not response):
+            raise HTTPException(status_code=500, detail="Failed to generate a response.")
+
         logging.info(f"Movie discussion response: {response}")
         return {"type": "text", "data": response}
-    except Exception as e:
-        raise CustomException(e,sys)
+    except CustomException as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    except Exception as e: 
+        logging.error(f"Error in handle_movie_discussion: {e}")
+        raise HTTPException(status_code=500, detail=f"Internal Server Error: {e}")

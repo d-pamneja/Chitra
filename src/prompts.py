@@ -322,8 +322,7 @@ prompts = [
     \tAns. The Lord of the Rings: The Return of the King
     
     \n\nAs you can see, the movie title can be present anywhere in the query, and it can be followed by a colon, a full stop, or a comma. Even can be present in the middle of the query. You need to be smart in extracting the movie name from the query.
-    However, there is an edge case, if any given query DOES NOT have a movie title in it, you have to return "None" as the output.     
-    Basically, wherever you cannot find a movie title, just give the string "None" as the output. This is to ensure that you are able to handle the edge cases as well.
+    However, there is an edge case, if any given query DOES NOT have a movie title in it, you have to return "None" as the output. If you cannot find any movie title in the query, you have to return "None" as the output, DO NOT GIVE ANY OTHER OUTPUT OR EXPLANATION. Just return "None" as the output.
     Now, make sure you extract the movie name correctly, and return it **as a string with no extra spaces or characters before or after the title**. It should be exactly the same as the movie name in the query, without any surrounding characters or quotes. 
     """
 ]
