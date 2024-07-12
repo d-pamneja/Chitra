@@ -164,3 +164,6 @@ cython_debug/
 
 # Backend
 /backend/node_modules
+/Data
+/CHROMA_DATABASE
+/SQL_Database
