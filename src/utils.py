@@ -479,3 +479,31 @@ def get_movie_discussion_response(movie_title, user_query,model,database):
     
     except Exception as e1:
         raise CustomException(e1,sys)
+    
+# Chat Analysis System
+def get_gemini_analysis_json(data,model):
+    """
+    Function to get the analysis of the chat conversation using the Gemini LLM model.
+
+    Args:
+        data (str): The chat conversation data. Where data is the in the format : 
+            1. user_id : The user id of the user.
+            2. user_name : The name of the user.
+            3. date : The date of the day analysis is required.
+            4. conversations : A list of JSONs containing the chat data, where each conversation is a JSON containing the following :
+                a. date : The date of the conversation.
+                b. conversation : The conversation between the user and the chatbot.
+                c. feedback : The feedback given by the user.
+                
+        model (genai.GenerativeModel): The GenerativeAI model instance.
+
+    Returns:
+        str: The analysis of the chat conversation.
+    """
+    try:
+        response = model.generate_content([str(data)])
+        logging.info(f"Response JSON from LLM: {response.text}")
+      
+        return response.text
+    except Exception as e1:
+        raise CustomException(e1,sys)

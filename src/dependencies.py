@@ -10,6 +10,9 @@ import pandas as pd
 import chromadb
 import sqlite3
 import re
+import json
+from bson import ObjectId as BaseObjectId
+from datetime import datetime
 
 import google.generativeai as genai
 GOOGLE_API_KEY_MOVIE_RECOMMENDER = os.getenv("GOOGLE_API_KEY_MOVIE_RECOMMENDER")
@@ -19,7 +22,7 @@ from fastapi import FastAPI, Depends, HTTPException, status, Query,Body, APIRout
 from fastapi.responses import JSONResponse
 from fastapi.security import OAuth2PasswordBearer
 from pydantic import BaseModel, Field
-from typing import List, Union, Dict
+from typing import List, Union, Dict, Optional
 import requests
 
 import pytest

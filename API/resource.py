@@ -33,6 +33,48 @@ class MovieDiscussionQuery(BaseModel):
 class MovieDiscussionResponse(BaseModel):
     type: str
     data: str
+    
+class ChatMessage(BaseModel):
+    user: str = Field(..., description="The user's message.")
+    chitra: str = Field(..., description="Chitra's response.")
+
+class Conversation(BaseModel):
+    date: datetime = Field(..., description="Date and time of the conversation.")
+    conversation: List[ChatMessage] = Field(..., description="List of messages in the conversation.")
+    feedback: Optional[str] = Field(None, description="User feedback on the conversation (optional).")
+        
+class ConversationAnalysisQuery(BaseModel):
+    user_id: str = Field(..., description="The user's ObjectId.")
+    user_name: str = Field(..., description="The user's name.")
+    date: datetime = Field(..., description="Date and time of the query.")
+    conversations: List[Conversation] = Field(..., description="List of conversations for analysis.")
+
+class ConversationSummary(BaseModel):
+    conversation_date: datetime
+    main_topics: List[str]
+    sentiment: float
+
+class UserFeedback(BaseModel):
+    date: datetime
+    feedback_type: str
+    comment: str
+
+class ConversationAnalysisResponse(BaseModel):
+    user_id: str = Field(..., description="The user's ID.")
+    user_name: str = Field(..., description="The user's name.")
+    analysis_date: datetime = Field(..., description="The date of the analysis.")
+    overall_sentiment: float = Field(..., description="The overall sentiment score of the conversations.")
+    preferred_genres: Dict[str,float] = Field(..., description="A dictionary of the user's preferred genres and their scores.")
+    liked_actors: List[str] = Field(..., description="A list of actors the user likes.")
+    disliked_actors: List[str] = Field(..., description="A list of actors the user dislikes.")
+    liked_directors: List[str] = Field(..., description="A list of directors the user likes.")
+    disliked_directors: List[str] = Field(..., description="A list of directors the user dislikes.")
+    positive_keywords: List[str] = Field(..., description="A list of positive keywords from the conversations.")
+    negative_keywords: List[str] = Field(..., description="A list of negative keywords from the conversations.")
+    conversation_summaries: List[ConversationSummary] = Field(..., description="Summaries of each conversation with main topics and sentiment.")
+    overall_conversation_analysis: str = Field(..., description="An overall analysis of the user's conversations and preferences.")
+    feedbacks: List[UserFeedback] = Field(..., description="List of user feedbacks.")
+    feedbacks_analysis: str = Field(..., description="An overall analysis of the user's feedbacks.")
 
 
 # Load Data (ChromaDB and SQLite)
@@ -118,6 +160,40 @@ movie_discussion = genai.GenerativeModel(
     system_instruction = system_instructions[1]
 )
 
+# Create the Conversation Analysis Bot Instance
+conversation_analyst = genai.GenerativeModel(
+    model_name = "gemini-1.5-flash-latest",
+    generation_config = {
+        "temperature": 1,
+        "top_p": 0.95,
+        "top_k": 64,
+        "max_output_tokens": 8192,
+        "response_mime_type": "text/plain"
+    },
+    safety_settings = [
+        {
+            "category": "HARM_CATEGORY_DANGEROUS",
+            "threshold": "BLOCK_NONE",
+        },
+        {
+            "category": "HARM_CATEGORY_HARASSMENT",
+            "threshold": "BLOCK_NONE",
+        },
+        {
+            "category": "HARM_CATEGORY_HATE_SPEECH",
+            "threshold": "BLOCK_NONE",
+        },
+        {
+            "category": "HARM_CATEGORY_SEXUALLY_EXPLICIT",
+            "threshold": "BLOCK_NONE",
+        },
+        {
+            "category": "HARM_CATEGORY_DANGEROUS_CONTENT",
+            "threshold": "BLOCK_NONE",
+        },
+    ],
+    system_instruction = system_instructions[2]
+)
 
 # Home Page
 @app.get("/")
@@ -269,4 +345,27 @@ async def handle_movie_discussion(query: MovieDiscussionQuery = Body(...)):
         raise HTTPException(status_code=400, detail=str(e))
     except Exception as e: 
         logging.error(f"Error in handle_movie_discussion: {e}")
+        raise HTTPException(status_code=500, detail=f"Internal Server Error: {e}")
+
+# Conversation Analysis
+@app.post("/api/conversation_analysis",response_model = ConversationAnalysisResponse)
+async def conversation_analysis(query: ConversationAnalysisQuery = Body(...)):
+    """Processes conversation analysis queries, returning an analysis of the user's conversations."""
+    try:
+        if(query.user_id is None or query.user_name is None or query.date is None or query.conversations is None):
+            raise HTTPException(status_code=400, detail="Invalid request body")
+        
+        response = get_gemini_analysis_json(query, conversation_analyst)
+
+        logging.info(f"Conversation analysis response: {response}")
+        analysis_json = json.loads(response)
+        if(type(analysis_json)!=dict): 
+            raise HTTPException(status_code=500, detail="Error fetching or processing conversation analysis")
+        
+        return ConversationAnalysisResponse(**analysis_json)
+
+    except CustomException as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    except Exception as e: 
+        logging.error(f"Error in conversation_analysis: {e}")
         raise HTTPException(status_code=500, detail=f"Internal Server Error: {e}")
