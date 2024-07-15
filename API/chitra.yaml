@@ -1,0 +1,364 @@
+openapi: 3.0.0
+info:
+  title: Chitra API - Powered by Gemini Flash 1.5
+  description: API for interacting with a movie-focused chatbot, providing recommendations, discussion, and conversation analysis.
+  version: 0.0.2
+servers:
+  - url: /api
+
+paths:
+  /:
+    get:
+      summary: Home Page
+      description: A simple greeting message.
+      responses:
+        200:
+          description: Successful response
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: Hello Chitra!
+
+  /api/chat:
+    post:
+      summary: Chatbot Endpoint
+      description: Handles user queries for chat interaction.
+      requestBody:
+        description: User query to Chitra Bot.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChitraQuery'
+            example:
+              question: "Tell me about the movie Inception"
+      responses:
+        200:
+          description: Successful response from Chitra Bot.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChitraResponse'
+        400:
+          description: Bad Request. Invalid query.
+        500:
+          description: Internal Server Error.
+
+  /chat_history:
+    get:
+      summary: Get Chat History
+      description: Retrieves the conversation history with Chitra Bot.
+      responses:
+        200:
+          description: Successful response.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    user:
+                      type: string
+                    chitra:
+                      type: string
+              example:
+                - user: "Tell me about the movie Inception"
+                  chitra: "Inception is a 2010 science fiction action film..."
+        404:
+          description: Not Found. No chat history available.
+
+  /current_movie:
+    get:
+      summary: Get Current Movie
+      description: Retrieves the movie currently being discussed.
+      responses:
+        200:
+          description: Successful response.
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: Inception
+        404:
+          description: Not Found. No movie currently being discussed.
+
+  /api/movie_query:
+    post:
+      summary: Movie Query Endpoint
+      description: Handles user queries for movie recommendations or information.
+      requestBody:
+        description: User question about movies.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MovieQuery'
+            example:
+              question: "What are some good sci-fi movies like Inception?"
+      responses:
+        200:
+          description: Successful response with movie information.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MovieInfo'
+        500:
+          description: Internal Server Error.
+  
+  /api/movie_discussion:
+    post:
+      summary: Movie Discussion Endpoint
+      description: Handles user queries for discussions about a specific movie.
+      requestBody:
+        description: User question and movie title for discussion.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MovieDiscussionQuery'
+            example:
+              question: "What are some of the key themes in Inception?"
+              movie_title: "Inception"
+      responses:
+        200:
+          description: Successful response from Chitra Bot about the movie discussion.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MovieDiscussionResponse'
+        400:
+          description: Bad Request. Invalid query or movie title.
+        500:
+          description: Internal Server Error.
+
+  /api/conversation_analysis:
+    post:
+      summary: Conversation Analysis Endpoint
+      description: Analyzes user conversations to derive insights and preferences.
+      requestBody:
+        description: User conversations data for analysis.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ConversationAnalysisQuery'
+      responses:
+        200:
+          description: Successful response with conversation analysis results.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConversationAnalysisResponse'
+        400:
+          description: Bad Request. Invalid request body.
+        500:
+          description: Internal Server Error.
+
+
+
+# Schemas for Request and Response Models
+components:
+  schemas:
+    ChitraQuery:
+      type: object
+      properties:
+        question:
+          type: string
+          description: The user's query to Chitra Bot.
+      required:
+        - question
+    ChitraResponse:
+      type: object
+      properties:
+        type:
+          type: string
+        data:
+          type: string
+    MovieQuery:
+      type: object
+      properties:
+        question:
+          type: string
+          description: The user's question about movies.
+      required:
+        - question
+    MovieInfo:
+      type: object
+      properties:
+        title:
+          type: string
+        keywords:
+          type: string
+        review_summary:
+          type: string
+    MovieDiscussionQuery:
+      type: object
+      properties:
+        question:
+          type: string
+          description: The user's question about movies.
+        movie_title:
+          type: string
+          description: The title of the movie being discussed.
+      required:
+        - question
+        - movie_title
+    MovieDiscussionResponse:
+      type: object
+      properties:
+        type:
+          type: string
+        data:
+          type: string
+    ChatMessage:
+      type: object
+      properties:
+        user:
+          type: string
+          description: The user's message.
+        chitra:
+          type: string
+          description: Chitra's response.
+      required:
+        - user
+        - chitra
+    Conversation:
+      type: object
+      properties:
+        date:
+          type: string
+          format: date-time
+          description: Date and time of the conversation.
+        conversation:
+          type: array
+          items:
+            $ref: '#/components/schemas/ChatMessage'
+          description: List of messages in the conversation.
+        feedback:
+          type: string
+          description: User feedback on the conversation (optional).
+    ConversationAnalysisQuery:
+      type: object
+      properties:
+        user_id:
+          type: string
+          description: The user's ID.
+        user_name:
+          type: string
+          description: The user's name.
+        date:
+          type: string
+          format: date-time
+          description: Date and time of the query.
+        conversations:
+          type: array
+          items:
+            $ref: '#/components/schemas/Conversation'
+          description: List of conversations for analysis.
+      required:
+        - user_id
+        - user_name
+        - date
+        - conversations
+    ConversationSummary:
+      type: object
+      properties:
+        conversation_date:
+          type: string
+          format: date-time
+          description: The date and time of the conversation.
+        main_topics:
+          type: array
+          items:
+            type: string
+          description: List of main topics discussed in the conversation.
+        sentiment:
+          type: number
+          format: float
+          description: The overall sentiment score of the conversation.
+    UserFeedback:
+      type: object
+      properties:
+        date:
+          type: string
+          format: date-time
+          description: The date and time the feedback was given.
+        feedback_type:
+          type: string
+          description: The type of feedback (e.g., "positive", "negative","neutral").
+        comment:
+          type: string
+          description: The user's comment or feedback.
+    ConversationAnalysisResponse:
+      type: object
+      properties:
+        user_id:
+          type: string
+          description: The user's ID.
+        user_name:
+          type: string
+          description: The user's name.
+        analysis_date:
+          type: string
+          format: date-time
+          description: The date of the analysis.
+        overall_sentiment:
+          type: number
+          format: float
+          description: The overall sentiment score of the conversations.
+        preferred_genres:
+          type: object
+          additionalProperties:
+            type: number
+            format: float
+          description: A dictionary of the user's preferred genres and their scores.
+        liked_actors:
+          type: array
+          items:
+            type: string
+          description: A list of actors the user likes.
+        disliked_actors:
+          type: array
+          items:
+            type: string
+          description: A list of actors the user dislikes.
+        liked_directors:
+          type: array
+          items:
+            type: string
+          description: A list of directors the user likes.
+        disliked_directors:
+          type: array
+          items:
+            type: string
+          description: A list of directors the user dislikes.
+        positive_keywords:
+          type: array
+          items:
+            type: string
+          description: A list of positive keywords from the conversations.
+        negative_keywords:
+          type: array
+          items:
+            type: string
+          description: A list of negative keywords from the conversations.
+        conversation_summaries:
+          type: array
+          items:
+            $ref: '#/components/schemas/ConversationSummary'
+          description: Summaries of each conversation with main topics and sentiment.
+        overall_conversation_analysis:
+          type: string
+          description: An overall analysis of the user's conversations and preferences.
+        feedbacks:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserFeedback'
+          description: List of user feedbacks.
+        feedbacks_analysis:
+          type: string
+          description: An overall analysis of the user's feedbacks.
