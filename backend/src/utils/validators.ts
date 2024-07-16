@@ -26,9 +26,13 @@ export const validate = (validations: ValidationChain[]) => {
 
 };
 
-// Creating sign up validator
-export const signUpValidator = [
-    body("name").notEmpty().withMessage("Name cannot be empty"),
+// Creating validators
+export const loginValidator = [
     body("email").trim().isEmail().withMessage("Email is required in valid format"),
     body("password").trim().isLength({min:6}).withMessage("Password has to be atleast 6 characters")
+]
+
+export const signUpValidator = [
+    body("name").notEmpty().withMessage("Name cannot be empty"),
+    ...loginValidator // Inherit all fields from the login validator
 ]
