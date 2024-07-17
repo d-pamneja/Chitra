@@ -2,6 +2,8 @@
 import { NextFunction, Request, Response } from "express"
 import user from "../models/user.js";
 import {hash,compare} from "bcrypt";
+import { createToken } from "../utils/token_manager.js";
+import { COOKIE_NAME } from "../utils/constants.js";
 
 
 // Fetching all the users from the database
@@ -44,6 +46,26 @@ export const userSignUp = async (
         const newUser = new user({name,email,password : hashedPassword});
         await newUser.save();
 
+        res.clearCookie(COOKIE_NAME, {
+            httpOnly: true,
+            domain: "127.0.0.1",
+            signed: true,
+            path: "/",
+        });
+    
+        const token = createToken(newUser._id.toString(), newUser.email, "7d");
+        const expiresInMilliseconds = 7 * 24 * 60 * 60 * 1000; 
+        const expires = new Date(Date.now() + expiresInMilliseconds);
+
+        res.cookie(COOKIE_NAME, token, {
+            path: "/",
+            domain: "127.0.0.1",
+            expires : expires,
+            httpOnly: true,
+            signed: true,
+            secure : true
+        });
+
         return res.status(201).json({
             message : "New user registered",
             userID : newUser._id.toString()
@@ -80,6 +102,27 @@ export const userLogIn = async (
                 message : "Incorrect password. Please try again."
             })
         }
+
+        
+        res.clearCookie(COOKIE_NAME, {
+            httpOnly: true,
+            domain: "127.0.0.1",
+            signed: true,
+            path: "/",
+        });
+    
+        const token = createToken(existingUser._id.toString(), existingUser.email, "7d");
+        const expiresInMilliseconds = 7 * 24 * 60 * 60 * 1000; 
+        const expires = new Date(Date.now() + expiresInMilliseconds);
+
+        res.cookie(COOKIE_NAME, token, {
+            path: "/",
+            domain: "127.0.0.1",
+            expires : expires,
+            httpOnly: true,
+            signed: true,
+            secure : true
+        });
 
         return res.status(200).json({
             message : "User successfully logged in.",
