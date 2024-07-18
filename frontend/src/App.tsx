@@ -5,9 +5,12 @@ import Signup from "./pages/signup"
 import Chat from "./pages/chat"
 import NotFound from "./pages/notFound"
 import Header from './components/Header'
+import { useAuth } from './context/AuthContext'
 
 
 function App() {
+  console.log(useAuth()?.isLoggedIn);
+  
   return (
     <main>
       <Header />

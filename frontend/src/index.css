@@ -6,9 +6,21 @@ body {
     margin: 0;
     padding: 0;
     font-family: 'Work Sans', sans-serif;
-    background-color: #f6f3f3;
-    color: #824ad5;
+    background-color: #05101c;
+    color: white;
     font-size: 16px;
     line-height: 1.6;
     overflow-x: hidden;
+}
+
+.nav-link {
+    font-weight: 600;
+    text-transform: uppercase;
+    margin: 0 10px;
+    margin-right: 10px;
+    margin-left: 10px;
+    padding: 8px 20px;
+    border-radius: 10px;
+    text-decoration: none;
+    letter-spacing: 1px;
 }
