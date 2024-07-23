@@ -4,9 +4,12 @@ import { useState, useEffect } from "react";
 const AnimatedFeatureBox = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const oneLiners = [
-    "Discover movies you'll love with personalized recommendations.",
-    "Find your next favorite movie with ease.",
-    "Get recommendations for movies you'll love."
+    "Talk to Chitra, your AI movie expert, for instant movie recommendations.",
+    "Discover personalized movie picks based on your unique tastes.",
+    "Dive deep into movie discussions - Chitra knows her cinema!",
+    "Unlock your movie insights with a personalized chat analysis report.",
+    "Join the Chitra community and connect with fellow film buffs.",
+    "Sign up/Log in to unleash the power of Chitra - your ultimate movie companion."
   ];
 
   useEffect(() => {
@@ -18,8 +21,19 @@ const AnimatedFeatureBox = () => {
   }, [oneLiners.length]);
 
   return (
-    <div style={{ position: "relative", overflow: "hidden", width: '450px' }}> 
-      <AnimatePresence initial={false}>
+    <div 
+      style={{
+        position: "relative",
+        width: "450px",
+        padding: "20px",
+        color: "white",
+        borderRadius: "5px",
+        boxShadow: "0px 2px 5px rgba(0, 0, 0, 0.2)",
+        textAlign: "center",
+        overflow: "hidden", 
+      }}
+    >
+      <AnimatePresence initial={false} mode="wait">
         <motion.div
           key={currentIndex}
           initial={{ opacity: 0, x: 100 }}
@@ -29,11 +43,10 @@ const AnimatedFeatureBox = () => {
           style={{
             width: "100%",  
             padding: "20px",
-            backgroundColor: "#1a1a1a", 
             color: "white",
             borderRadius: "5px",
             boxShadow: "0px 2px 5px rgba(0, 0, 0, 0.2)",
-            textAlign: "center", 
+            textAlign: "center",
           }}
         >
           {oneLiners[currentIndex]}

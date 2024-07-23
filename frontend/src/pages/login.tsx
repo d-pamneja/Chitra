@@ -11,6 +11,8 @@ const Login = () => {
                 height={'100%'} 
                 display="flex" 
                 flex={1}
+                alignItems="center"
+                justifyContent="center"
             >
                 <Container maxWidth="sm">
                         <Box 
@@ -80,12 +82,10 @@ const Login = () => {
                                     </Button>
                                 </Box>
                             </form>
-                            <AnimatedFeatureBox />
+                            <AnimatedFeatureBox/>
                         </Box>
                 </Container>
             </Box>
-
-
     );
 };
 
