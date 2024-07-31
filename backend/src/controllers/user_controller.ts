@@ -46,12 +46,10 @@ export const userSignUp = async (
         const newUser = new user({name,email,password : hashedPassword});
         await newUser.save();
 
-        res.clearCookie(COOKIE_NAME, {
-            httpOnly: true,
-            domain: "127.0.0.1",
-            signed: true,
-            path: "/",
-        });
+        const oldToken = req.signedCookies[`${COOKIE_NAME}`]; // Read the current cookie
+        if (oldToken) {
+            res.clearCookie(COOKIE_NAME);
+        }
     
         const token = createToken(newUser._id.toString(), newUser.email, "7d");
         const expiresInMilliseconds = 7 * 24 * 60 * 60 * 1000; 
@@ -59,7 +57,7 @@ export const userSignUp = async (
 
         res.cookie(COOKIE_NAME, token, {
             path: "/",
-            domain: "127.0.0.1",
+            domain: "localhost",
             expires : expires,
             httpOnly: true,
             signed: true,
@@ -68,7 +66,8 @@ export const userSignUp = async (
 
         return res.status(201).json({
             message : "New user registered",
-            userID : newUser._id.toString()
+            name : existingUser.name,
+            email : existingUser.email
         });
     } 
     catch (error) {
@@ -103,13 +102,10 @@ export const userLogIn = async (
             })
         }
 
-        
-        res.clearCookie(COOKIE_NAME, {
-            httpOnly: true,
-            domain: "127.0.0.1",
-            signed: true,
-            path: "/",
-        });
+        const oldToken = req.signedCookies[`${COOKIE_NAME}`]; // Read the current cookie
+        if (oldToken) {
+            res.clearCookie(COOKIE_NAME);
+        }
     
         const token = createToken(existingUser._id.toString(), existingUser.email, "7d");
         const expiresInMilliseconds = 7 * 24 * 60 * 60 * 1000; 
@@ -117,8 +113,8 @@ export const userLogIn = async (
 
         res.cookie(COOKIE_NAME, token, {
             path: "/",
-            domain: "127.0.0.1",
-            expires : expires,
+            domain: "localhost",
+            expires,
             httpOnly: true,
             signed: true,
             secure : true
@@ -126,7 +122,42 @@ export const userLogIn = async (
 
         return res.status(200).json({
             message : "User successfully logged in.",
-            userID : existingUser._id.toString()
+            name : existingUser.name,
+            email : existingUser.email
+        });
+    } 
+    catch (error) {
+        console.log(`Error in logging in user : ${error.message}`);
+
+        return res.status(500).json({
+            message : "Error in logging in user",
+            reason : error.message
+        })
+    }
+};
+
+export const verifyUser = async (
+    req : Request,
+    res : Response,
+    next : NextFunction
+)=>{
+    try {
+        const existingUser = await user.findById(res.locals.jwtData.id);
+        if(!existingUser){
+            return res.status(401).json({
+                message : "User not registered or Token malfunctioned."
+            })
+        }
+        console.log(existingUser._id.toString(),res.locals.jwtData.id);
+
+        if(existingUser._id.toString() != res.locals.jwtData.id){
+            return res.status(401).send("Permissions did not match.");
+        }
+
+        return res.status(200).json({
+            message : "User successfully logged in.",
+            name : existingUser.name,
+            email : existingUser.email
         });
     } 
     catch (error) {
@@ -140,4 +171,4 @@ export const userLogIn = async (
 };
 
 
-export default {getAllUsers,userSignUp};
+export default {getAllUsers,userSignUp,userLogIn,verifyUser};

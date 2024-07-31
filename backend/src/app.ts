@@ -8,12 +8,14 @@ import {config} from "dotenv";
 import morgan from "morgan";
 import appRouter from "./routes/index.js";
 import cookieParser from "cookie-parser";
+import cors from "cors";
 
 // Creating Express application
 config();
 const app = express();
 
 // Initialising the Middlewares
+app.use(cors({ origin: "http://localhost:5173", credentials: true }));
 app.use(express.json());
 app.use(cookieParser(process.env.COOKIE_SECRET));
 app.use(morgan("dev")); // This needs to be removed when in production mode

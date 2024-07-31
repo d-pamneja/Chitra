@@ -3,8 +3,30 @@ import { Box, Button, Container, Typography } from '@mui/material';
 import {IoMdLogIn} from 'react-icons/io'
 import CustomInput from '../components/shared/CustomInput';
 import AnimatedFeatureBox from '../components/shared/Facts';
+import { toast } from 'react-hot-toast';
+import { useAuth } from '../context/AuthContext';
 
 const Login = () => {
+    const auth = useAuth();
+    const handleSubmit = async (event:React.FormEvent<HTMLFormElement>)=>{
+        event.preventDefault();
+
+        const formData = new FormData(event.currentTarget);
+        const email = formData.get("email") as string;
+        const password = formData.get("password") as string;
+
+        try{
+            toast.loading("Signing In",{ id : "login" });
+            await auth?.login(email,password);
+            toast.success("Signed In Successfully",{ id : "login" });
+        }
+        catch(error){
+            console.log(error);
+            toast.error("Sign In Fail",{ id : "login" });
+        }
+
+    };
+
     return (
             <Box 
                 width={'100%'} 
@@ -27,6 +49,7 @@ const Login = () => {
                             gap={10}
                         >
                             <form 
+                                onSubmit={(handleSubmit)}
                                 style={{
                                     margin:'auto', 
                                     padding:'30px', 
