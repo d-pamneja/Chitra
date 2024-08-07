@@ -1,5 +1,5 @@
 # Importing the dependencies
-import pytest
+from src.dependencies import *
 from fastapi.testclient import TestClient
 from main import app
 from src.utils import get_movie_title, is_valid_movie
@@ -12,7 +12,7 @@ from httpx import AsyncClient
 # Test Client Fixture
 @pytest.fixture(scope="module")
 async def async_client():
-    async with AsyncClient(app=app, base_url="http://127.0.0.1:8000") as ac:
+    async with AsyncClient(app=app, base_url="http://127.0.0.1:8080") as ac:
         yield ac
 
 

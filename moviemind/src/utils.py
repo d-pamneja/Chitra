@@ -62,7 +62,7 @@ def is_movie_recommendation_query(query,prompts):
     
 
 # Movie Recommendation System
-keyword_data_path = "/Users/dhruv/Desktop/Machine_Learning/Projects/Chitra_Movie_Bot/CHROMA_DATABASE"
+keyword_data_path = "/Users/dhruv/Desktop/Machine_Learning/Projects/Chitra_Movie_Bot/moviemind/CHROMA_DATABASE"
 client_key = chromadb.PersistentClient(path = keyword_data_path)
 movie_collection = client_key.get_collection("MOVIES")
 
@@ -107,7 +107,7 @@ def find_similar_movies(movie_title, data, movie_collection, top_k=6):
         raise CustomException(e1,sys)
     
 
-database = "/Users/dhruv/Desktop/Machine_Learning/Projects/Chitra_Movie_Bot/SQL_Database/Movies.db"
+database = "/Users/dhruv/Desktop/Machine_Learning/Projects/Chitra_Movie_Bot/moviemind/SQL_Database/Movies.db"
 database_key_based = pd.read_sql("SELECT m.* FROM Movies_Key_Based AS m", sqlite3.connect(database))
 database_query_based = pd.read_sql("SELECT m.* FROM Movies_Database AS m", sqlite3.connect(database))
 
