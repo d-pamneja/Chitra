@@ -117,15 +117,19 @@
 // export default Login;
 
 import React from 'react';
-import { Box, Button, Container, Typography } from '@mui/material';
+import { Box, Button, Container, Typography, Divider} from '@mui/material';
 import { IoMdLogIn } from 'react-icons/io';
 import CustomInput from '../../components/shared/CustomInput';
 import Content from './contents';
 import { toast } from 'react-hot-toast';
 import { useAuth } from '../../context/AuthContext';
+import { GoogleLogin,CredentialResponse } from '@react-oauth/google';
+import GoogleAPIComponent from '../../components/GoogleAPI';
 
 const Login = () => {
   const auth = useAuth();
+
+  GoogleAPIComponent(); 
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -143,6 +147,14 @@ const Login = () => {
       toast.error('Sign In Failed', { id: 'login' });
     }
   };
+
+  const onSuccess = (response : CredentialResponse) => {
+    console.log("Login Success: currentUser:", response);
+  }
+
+  const onFailure = () => {
+    console.log("Login Failed");
+  }
 
   return (
     <Box 
@@ -220,6 +232,15 @@ const Login = () => {
                 Login
               </Button>
             </form>
+            <br />
+            <Divider>or</Divider>
+            <br />
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+              <GoogleLogin 
+                onSuccess={onSuccess}
+                onError={onFailure}
+              />
+            </Box>
           </Box>
         </Container>
       </Box>

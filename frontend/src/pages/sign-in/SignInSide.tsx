@@ -4,7 +4,7 @@ import Stack from '@mui/material/Stack';
 import { createTheme, ThemeProvider, PaletteMode } from '@mui/material/styles';
 import getSignInSideTheme from './theme/getSignInSideTheme';
 import SignInCard from './SignInCard';
-import Content from './Content';
+// import Content from './Content';
 import TemplateFrame from './TemplateFrame';
 
 export default function SignInSide() {
@@ -74,7 +74,7 @@ export default function SignInSide() {
               m: 'auto',
             }}
           >
-            <Content />
+            {/* <Content /> */}
             <SignInCard />
           </Stack>
         </Stack>
