@@ -125,9 +125,12 @@ import { toast } from 'react-hot-toast';
 import { useAuth } from '../../context/AuthContext';
 import { GoogleLogin,CredentialResponse } from '@react-oauth/google';
 import GoogleAPIComponent from '../../components/GoogleAPI';
+import { useNavigate } from 'react-router-dom';
+
 
 const Login = () => {
   const auth = useAuth();
+  const navigate = useNavigate();
 
   GoogleAPIComponent(); 
 
@@ -142,6 +145,8 @@ const Login = () => {
       toast.loading('Signing In', { id: 'login' });
       await auth?.login(email, password);
       toast.success('Signed In Successfully', { id: 'login' });
+      const redirect = "/chat";
+      navigate(redirect);
     } catch (error) {
       console.log(error);
       toast.error('Sign In Failed', { id: 'login' });

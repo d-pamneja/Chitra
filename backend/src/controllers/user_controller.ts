@@ -66,8 +66,8 @@ export const userSignUp = async (
 
         return res.status(201).json({
             message : "New user registered",
-            name : existingUser.name,
-            email : existingUser.email
+            name : newUser.name,
+            email : newUser.email
         });
     } 
     catch (error) {

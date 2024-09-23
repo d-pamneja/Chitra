@@ -14,7 +14,7 @@ import Typography from '@mui/material/Typography';
 import { styled } from '@mui/material/styles';
 
 import ForgotPassword from './ForgotPassword';
-import { GoogleIcon, FacebookIcon, SitemarkIcon } from '../login/customIcons';
+// import { GoogleIcon, FacebookIcon, SitemarkIcon } from '../login/customIcons';
 
 const Card = styled(MuiCard)(({ theme }) => ({
   display: 'flex',
@@ -88,7 +88,7 @@ export default function SignInCard() {
   return (
     <Card variant="outlined">
       <Box sx={{ display: { xs: 'flex', md: 'none' } }}>
-        <SitemarkIcon />
+        {/* <SitemarkIcon /> */}
       </Box>
       <Typography
         component="h1"
@@ -176,7 +176,7 @@ export default function SignInCard() {
           fullWidth
           variant="outlined"
           onClick={() => alert('Sign in with Google')}
-          startIcon={<GoogleIcon />}
+          // startIcon={<GoogleIcon />}
         >
           Sign in with Google
         </Button>
@@ -185,7 +185,7 @@ export default function SignInCard() {
           fullWidth
           variant="outlined"
           onClick={() => alert('Sign in with Facebook')}
-          startIcon={<FacebookIcon />}
+          // startIcon={<FacebookIcon />}
         >
           Sign in with Facebook
         </Button>
