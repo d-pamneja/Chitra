@@ -1,6 +1,6 @@
 import { Routes, Route } from 'react-router-dom'
 import Home from "./pages/home"
-import Login from "./pages/login"
+import Login from "./pages/login/login"
 import Signup from "./pages/signup"
 import Chat from "./pages/chat"
 import NotFound from "./pages/notFound"

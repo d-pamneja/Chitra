@@ -5,17 +5,27 @@ type Props = {
     name : string, 
     type : string,
     label : string,
+    fullWidth?: boolean;
 };
 
 const CustomInput = (props: Props) =>{
     return (
         <TextField 
             margin='normal' 
-            InputLabelProps={{style:{color:'black'}}} 
+            InputLabelProps={{style:{color:'white'}}} 
             name={props.name} 
             label={props.label} 
             type={props.type} 
-            InputProps={{style : {width:'400px', borderRadius:10,fontSize:20, color:'black', borderColor:'black'}}}>
+            fullWidth={props.fullWidth}
+            InputProps={{
+                style: {
+                    borderRadius: 10,
+                    fontSize: 20,
+                    backgroundColor: '#132542',
+                    border: '1px solid rgba(255, 255, 255, 0.1)',
+                    color: 'white',
+                },
+            }}>
         </TextField>
     );
 };
