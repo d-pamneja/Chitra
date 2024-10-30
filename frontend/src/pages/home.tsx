@@ -1,7 +1,10 @@
 import React from 'react';
+import { GoogleGeminiEffect } from '../components/ui/gemini-effect';
 
 const Home = () => {
-    return <div>Home</div>
+    return <div>
+        <GoogleGeminiEffect/>
+    </div>
 };
 
 
