@@ -1,9 +1,12 @@
 import React from 'react';
-import { GoogleGeminiEffect } from '../components/ui/gemini-effect';
+import { GoogleGeminiEffectInstance } from '../components/ui/gemini-effect';
+import { ParallaxScrollInstance } from '../components/ui/parallax-scroll';
+import {VortexInstance} from '../components/ui/vortex';
 
 const Home = () => {
     return <div>
-        <GoogleGeminiEffect/>
+        <GoogleGeminiEffectInstance/>
+        <VortexInstance/>
     </div>
 };
 

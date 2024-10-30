@@ -28,11 +28,19 @@ export const validate = (validations: ValidationChain[]) => {
 
 // Creating validators
 export const loginValidator = [
-    body("email").trim().isEmail().withMessage("Email is required in valid format"),
-    body("password").trim().isLength({min:6}).withMessage("Password has to be atleast 6 characters")
+    body("email")
+        .not().isEmpty().withMessage("Email cannot be empty")
+        .trim()
+        .isEmail().withMessage("Email is required in valid format"),
+
+    body("password")
+        .not().isEmpty().withMessage("Password cannot be empty")
+        .trim()
+        .isLength({min:6}).withMessage("Password has to be atleast 6 characters"),
 ]
 
 export const signUpValidator = [
-    body("name").notEmpty().withMessage("Name cannot be empty"),
+    body("name")
+        .notEmpty().withMessage("Name cannot be empty"),
     ...loginValidator // Inherit all fields from the login validator
 ]

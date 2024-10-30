@@ -6,7 +6,6 @@ import { createToken } from "../utils/token_manager.js";
 import { COOKIE_NAME } from "../utils/constants.js";
 
 
-// Fetching all the users from the database
 export const getAllUsers = async (
     req : Request,
     res : Response,
@@ -170,5 +169,26 @@ export const verifyUser = async (
     }
 };
 
+export const userLogout = async (
+    req : Request,
+    res : Response,
+    next : NextFunction
+)=>{
+    try {
+        res.clearCookie(COOKIE_NAME);
+        return res.status(200).json({
+            message : "User successfully logged out."
+        });
+    } 
+    catch (error) {
+        console.log(`Error in logging out user : ${error.message}`);
 
-export default {getAllUsers,userSignUp,userLogIn,verifyUser};
+        return res.status(500).json({
+            message : "Error in logging in user",
+            reason : error.message
+        })
+    }
+};
+
+
+export default {getAllUsers,userSignUp,userLogIn,verifyUser,userLogout};

@@ -6,14 +6,11 @@ import Content from './contents';
 import { toast } from 'react-hot-toast';
 import { useAuth } from '../../context/AuthContext';
 import { GoogleLogin,CredentialResponse } from '@react-oauth/google';
-import GoogleAPIComponent from '../../components/GoogleAPI';
 import { useNavigate } from 'react-router-dom';
 
 const SignUp = () => {
   const auth = useAuth();
   const navigate = useNavigate();
-
-  GoogleAPIComponent(); 
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -23,17 +20,20 @@ const SignUp = () => {
     const email = formData.get('email') as string;
     const password = formData.get('password') as string;
 
-    console.log({ name, email, password });
-
     try {
-      toast.loading('Signing Up', { id: 'signup' });
       await auth?.signup(name,email, password);
       toast.success('Signed Up Successfully', { id: 'signup' });
       const redirect = "/chat";
       navigate(redirect);
     } catch (error) {
-      console.log(error);
-      toast.error('Sign Up Failed', { id: 'signup' });
+      // Type Assertion for error to specify the expected structure of error
+      const errorsArray = (error as { response: { data: { errors: { msg: string }[] } } }).response?.data?.errors;
+      
+      if (errorsArray && errorsArray.length > 0) {
+          toast.error(`Sign Up Failed : ${errorsArray[0].msg}`, { id: 'signup' });
+      } else {
+          toast.error("Sign Up Failed: Unknown error", { id: 'signup' });
+      }
     }
   };
 

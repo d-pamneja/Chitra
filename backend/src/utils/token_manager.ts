@@ -10,7 +10,7 @@ export const createToken = (id: string, email: string, expiresIn: string) => {
       expiresIn,
     });
     return token;
-  };
+};
 
 export const verifyToken = async (
     req: Request,

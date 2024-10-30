@@ -142,14 +142,19 @@ const Login = () => {
     const password = formData.get('password') as string;
 
     try {
-      toast.loading('Signing In', { id: 'login' });
       await auth?.login(email, password);
       toast.success('Signed In Successfully', { id: 'login' });
       const redirect = "/chat";
       navigate(redirect);
     } catch (error) {
-      console.log(error);
-      toast.error('Sign In Failed', { id: 'login' });
+      // Type Assertion for error to specify the expected structure of error
+      const errorsArray = (error as { response: { data: { errors: { msg: string }[] } } }).response?.data?.errors;
+      
+      if (errorsArray && errorsArray.length > 0) {
+          toast.error(`Sign In Failed : ${errorsArray[0].msg}`, { id: 'signup' });
+      } else {
+          toast.error("Sign Up Failed : Unknown error", { id: 'signup' });
+      }
     }
   };
 

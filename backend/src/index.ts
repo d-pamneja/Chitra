@@ -8,7 +8,7 @@ import { connectToDatabase } from "./db/connection.js";
 // Connecting the database and application
 const PORT = process.env.PORT || 5000;
 console.log("Running on port: ",PORT );
-connectToDatabase(process.env.MONGODB_URI)
+connectToDatabase()
     .then(() => {
         app.listen(PORT,()=>console.log("Server opened and connected to MongoDB."));
     })
