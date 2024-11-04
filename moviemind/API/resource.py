@@ -322,6 +322,7 @@ async def get_current_movie():
 async def handle_movie_query(query: MovieQuery = Body(...)):
     """Processes movie queries, returning recommendations or SQL results."""
     try:
+        logging.info(f"Idhar Hoon Gandu")
         result = get_gemini_response(query.question, prompts, database_query_based, database_key_based, movie_collection)
         processed_results = process_sql_query(result, database)
 
