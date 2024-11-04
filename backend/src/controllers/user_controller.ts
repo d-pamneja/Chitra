@@ -141,6 +141,10 @@ export const verifyUser = async (
     next : NextFunction
 )=>{
     try {
+        if(!res.locals.jwtData){
+            return res.status(403).json({message : "Invalid authorisation"})
+        }
+        
         const existingUser = await user.findById(res.locals.jwtData.id);
         if(!existingUser){
             return res.status(401).json({

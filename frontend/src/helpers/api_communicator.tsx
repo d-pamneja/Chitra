@@ -44,10 +44,15 @@ export const logoutUser = async () => {
 
 
 export const checkAuthStatus = async () => {
-    const res = await axios.get("/user/auth-status");
-    if (res.status !== 200) {
-      throw new Error("Unable to authenticate");
+    try{
+        const res = await axios.get("/user/auth-status");
+        if(res.status===403 || res.status===401){
+            throw new Error("Error caught successfully")
+        }
+        const data = await res.data;
+        return data;
     }
-    const data = await res.data;
-    return data;
+    catch(error){
+        return null; 
+    }
   };

@@ -1,8 +1,6 @@
-import React from 'react'
 import AppBar from '@mui/material/AppBar'
 import Toolbar from '@mui/material/Toolbar'
 import Box from '@mui/material/Box'
-import Button from '@mui/material/Button';
 import Logo from './shared/Logo';
 import { useAuth } from '../context/AuthContext';
 import NavigationLink from './shared/NavigationLink';
@@ -14,8 +12,12 @@ const Header = () => {
 
     const handleLogout = async () => {
         try {
-            await auth.logout();
-            console.log("User logged out"); // Confirm the function fires
+            if(auth){
+                await auth.logout();
+            }
+            else{
+                throw new Error("Unable to logout");
+            }
         } catch (error) {
             console.error("Logout failed", error);
         }
@@ -35,12 +37,13 @@ const Header = () => {
                         text="Chat" 
                         textColor="black"
                     />
-                    <Button
-                        sx={{ bgcolor: "#51538f", color: "white" }}
-                        onClick={handleLogout} // Use direct function here
-                    >
-                        Logout
-                    </Button>
+                    <NavigationLink 
+                        bg="#51538f" 
+                        to="/" 
+                        text="Logout" 
+                        textColor="white"
+                        onClick={handleLogout}
+                    />
                 </>
                 ) : (
                 <>

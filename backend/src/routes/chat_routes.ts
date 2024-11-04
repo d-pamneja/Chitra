@@ -5,7 +5,8 @@ import { verifyToken } from "../utils/token_manager.js";
 // Initialising the user Router
 const chatRouter = Router();
 
-chatRouter.get('/',verifyToken) 
+chatRouter.use(verifyToken)
+chatRouter.get('/') 
 
 // Exporting the user Router
 export default chatRouter;

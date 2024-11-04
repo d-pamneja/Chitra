@@ -6,9 +6,10 @@ import chatRouter from "./chat_routes.js";
 // Creating the Router
 const appRouter = Router();
 
+
 // Setting the Middleware
-appRouter.use("/user",userRouter); // If request to '/api/v2/user' is made via frontend, it will be handled by userRouter
-appRouter.use("/chat",chatRouter); // If request to '/api/v2/chat' is made via frontend, it will be handled by chatRouter
+appRouter.use("/user",userRouter); 
+appRouter.use("/chat",chatRouter);
 
 // Exporting the router
 export default appRouter;

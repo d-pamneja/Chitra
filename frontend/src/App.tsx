@@ -1,26 +1,34 @@
 import { Routes, Route } from 'react-router-dom'
-import Home from "./pages/home"
-import Login from "./pages/login/login"
-import Signup from "./pages/sign-up/signup"
-import Chat from "./pages/chat"
-import NotFound from "./pages/notFound"
+import { nav } from './structure/navigation';
 import Header from './components/Header'
-import { useAuth } from './context/AuthContext'
+import { useAuth } from './context/AuthContext';
 
 
 function App() {
-  console.log(useAuth()?.isLoggedIn);
-  
+
+  const auth = useAuth()
+  console.log("Auth Status:", auth?.isLoggedIn);
+
   return (
     <main>
       <Header />
       <Routes>
-        <Route path = "/" element={<Home/>}/>
-        <Route path = "/login" element={<Login/>}/>
-        <Route path = "/signup" element={<Signup/>}/>
-        <Route path = "/chat" element={<Chat/>}/>
-
-        <Route path = "*" element={<NotFound/>}/>
+        {nav.map((r, i) => {
+            if (!r.isRestricted) {
+              return <Route key={i} path={r.path} element={r.element} />;
+            } else if (r.name === "Chat") {
+              if(auth?.isLoggedIn){
+                return (
+                  <Route
+                    key={i}
+                    path={r.path}
+                    element={r.element}
+                  />
+                );
+              }
+            }
+            return null;
+          })}
       </Routes>
     </main>
   )

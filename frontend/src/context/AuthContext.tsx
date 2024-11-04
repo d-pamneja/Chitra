@@ -35,9 +35,14 @@ export const AuthProvider = ({children}:{children : ReactNode})=> {
         // Fetch if the user's cookies are valid, means already logged in and no need to perform login step here
         async function checkStatus () {
             const data = await checkAuthStatus();
-            if(data){
+            if(!data){
+                setIsLoggedIn(false);
+                return;
+            }
+            else{
                 setUser({email:data.email,name:data.name})
                 setIsLoggedIn(true);
+                return;
             }
         }
 
