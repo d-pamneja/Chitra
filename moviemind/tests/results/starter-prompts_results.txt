@@ -1,0 +1,158 @@
+Test Results:
+========================================
+Prompt: Hi chitra!
+Response: Hey there! 👋 It's great to hear from you! What kind of movies are you in the mood for today?  😊  Are you looking for something specific, like a particular genre or director?  Or are you open to discovering something new and exciting? ✨ 
+
+I'm ready to dive into the world of cinema with you and find some films you'll love! 🍿 
+
+
+
+
+
+
+
+
+
+----------------------------------------
+Prompt: Hello chitra
+Response: Hey there! 👋  It's great to hear from you!  What kind of movies are you interested in today?  😊  Are you looking for a specific genre, a director you admire, or maybe a movie with a particular actor?  Or are you open to discovering something new and exciting? ✨ 
+
+I'm ready to dive into the world of cinema with you and find some films you'll love! 🍿 
+
+
+
+
+
+
+
+
+
+----------------------------------------
+Prompt: Tell me about yourself.
+Response: You want to know about me?  Well, I'm Chitra, your personal movie guide! 🎬  I'm passionate about cinema and love helping people discover new and exciting films. 
+
+I'm always learning about new movies and directors, and I love sharing my knowledge with others.  I'm also connected to a huge movie database, which means I can find recommendations based on your specific preferences. ✨
+
+So, what kind of movies do you like?  Tell me about your favorite genres, actors, directors, or even just a movie that you really enjoyed recently.  😊  The more you tell me, the better I can tailor my recommendations to you!  🍿 
+
+
+
+
+
+
+
+
+
+
+
+----------------------------------------
+Prompt: so what do you do?
+Response: You're right to ask! I'm Chitra, your very own movie guide!  🎬  My job is to help you discover amazing new movies that you'll love. 
+
+Think of me like a friend who's always up on the latest releases and classic films, and loves to share their passion for cinema with others.  😉 
+
+I'm connected to a special movie database, which means I can find recommendations based on your favorite genres, actors, directors, or even just a movie you really enjoyed recently.  ✨  
+
+So, tell me, what kind of movies are you in the mood for today?  😊  Are you looking for something specific, like a particular genre or director?  Or are you open to discovering something new and exciting?  🍿 
+
+
+
+
+
+
+
+
+
+
+
+----------------------------------------
+Prompt: I really like action movies, with a dash of comedy in them
+Response: Ooh, action-comedy! 💪 That's a great combination! Do you have any favorite action-comedy stars? Or maybe a specific movie that comes to mind when you think of this genre? 🤔 I'm always eager to learn about new films, especially ones that mix action and humor! 🍿 
+
+Also, I can use a movie database to look for recommendations based on genre, release year, cast, director, rating, keywords, or even the movie title itself. ✨ What do you think? Shall we explore some options? 😉 
+
+
+
+
+
+
+
+
+
+----------------------------------------
+Prompt: I'm a big fan of horror movies
+Response: Ah, a fellow horror enthusiast! 👻  I love a good scare, too!  Do you have a favorite horror sub-genre?  Maybe you prefer classic slashers, psychological thrillers, or supernatural chills? 😱  
+
+I'm also familiar with many horror movies, so feel free to share some of your favorites, and I can tell you about others you might enjoy! 😈  For instance, have you seen *The Babadook*?  It's a masterpiece of psychological horror that I think you'd appreciate.  🖤 
+
+What do you think?  Shall we delve into the world of horror together? 🍿 
+
+
+
+
+
+
+
+----------------------------------------
+Prompt: Hmm I don't know what to watch
+Response: No worries!  That's what I'm here for!  😊  To help you find something you'll love. 
+
+Tell me, what kind of mood are you in?  Are you looking for something light and fun, or something dark and intense?  Do you prefer a classic movie or something newer?  
+
+The more you tell me, the better I can narrow down the options and find a movie you'll enjoy!  🍿  
+
+I'm also connected to a huge movie database, so I can search for films based on genre, director, actor, or even just a keyword!  ✨  
+
+Let's find your perfect movie!  🎬  
+
+
+
+
+
+
+
+----------------------------------------
+Prompt: So you see, I really like romantic thrillers
+Response: Ah, romantic thrillers!  💖  A perfect mix of excitement and emotional connection!  I love those!  Do you have any favorite romantic thriller movies?  Or maybe some actors you love in this genre?  😊  
+
+I'm always eager to discover new romantic thrillers.  I have a feeling we're on the same wavelength!  Let's see what we can find together.  ✨  I can also search for movies based on specific keywords, like "suspense," "love," or "danger." 
+
+What do you think?  Shall we dive into the world of romantic thrillers?  🍿 
+
+
+
+
+
+----------------------------------------
+Prompt: Big ensemble casts in superhero genre are my thing
+Response: Ah, you're a fan of epic superhero team-ups! 🦸‍♀️🦸‍♂️  I understand! There's just something so exciting about seeing a massive cast of characters with unique powers coming together to save the day!  
+
+Do you have a favorite superhero team or a particular movie that comes to mind?  🤔  I'm a big fan of the *Avengers* movies and *Justice League*, but I'm always looking for new recommendations! 
+
+Let's see what we can find for you.  ✨ I can also search for movies based on specific keywords like "superhero," "team," and "ensemble cast."  
+
+What do you think?  Shall we find your next superhero adventure?  🍿 
+
+
+
+
+
+
+----------------------------------------
+Prompt: I'm in the mood for a good drama movie
+Response: Ah, a good drama!  ✨  It's always rewarding to get swept up in a compelling story with complex characters and powerful emotions. 
+
+Do you have a preference for a specific type of drama?  Are you looking for something historical, contemporary, or maybe a biopic?  Do you have a favorite director or actor known for their dramatic roles?  😊  
+
+I'm also connected to a vast movie database, so I can easily search for dramas based on genre, director, actor, or even specific themes like "family," "loss," or "redemption."   
+
+Let's find your perfect dramatic experience!  🎬  What do you think?  Shall we explore some options?  🍿 
+
+
+
+
+
+
+
+
+----------------------------------------
