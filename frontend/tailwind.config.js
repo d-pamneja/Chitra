@@ -1,4 +1,5 @@
 const defaultTheme = require("tailwindcss/defaultTheme");
+const svgToDataUri = require("mini-svg-data-uri");
 const colors = require("tailwindcss/colors");
 const {
   default: flattenColorPalette,
@@ -15,10 +16,20 @@ module.exports = {
   ],
   theme: {
     extend: {
+      colors : {
+        blue : {
+          300 : '#00fffc'
+        },
+        purple : {
+          500 : "#B769E8",
+          700 : "#51538f"
+        }
+      },
       fontFamily: {
         inter: ["var(--font-inter)", "sans-serif"],
         nacelle: ["var(--font-nacelle)", "sans-serif"],
-        mono: ["Roboto Mono", "monospace"]
+        mono: ["Roboto Mono", "monospace"],
+        sans: ['"Work Sans"', 'sans-serif'],
       },
       fontSize: {
         xs: ["0.8125rem", { lineHeight: "1.5384" }],
@@ -121,7 +132,22 @@ module.exports = {
       },
     },
   },
-  plugins: [require("@tailwindcss/forms"),addVariablesForColors],
+  plugins: [
+    require("@tailwindcss/forms"),
+    addVariablesForColors,
+    function ({ matchUtilities, theme }: any) {
+      matchUtilities(
+        {
+          "bg-dot-thick": (value: any) => ({
+            backgroundImage: `url("${svgToDataUri(
+              `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="16" height="16" fill="none"><circle fill="${value}" id="pattern-circle" cx="10" cy="10" r="2.5"></circle></svg>`
+            )}")`,
+          }),
+        },
+        { values: flattenColorPalette(theme("backgroundColor")), type: "color" }
+      );
+    },
+  ],
   darkMode: "class"
 };
 

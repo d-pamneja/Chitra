@@ -1,12 +1,12 @@
-import React from 'react';
-import { GoogleGeminiEffectInstance } from '../components/ui/gemini-effect';
-import { ParallaxScrollInstance } from '../components/ui/parallax-scroll';
-import {VortexInstance} from '../components/ui/vortex';
+import { HeroHighlightInstance } from '../components/ui/highlight-text';
 
 const Home = () => {
     return <div>
-        <GoogleGeminiEffectInstance/>
-        <VortexInstance/>
+        {/* <VortexInstance/> */}
+        <HeroHighlightInstance/>
+        <div className="h-screen">
+            BKC
+        </div>
     </div>
 };
 

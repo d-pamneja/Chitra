@@ -23,3 +23,20 @@ export const nav = [
     }
 ]
 
+export const socials = [
+    {
+        path : "https://github.com/d-pamneja/Chitra_Movie_Bot", name : "Github", logo : "" 
+    },
+    {
+        path : "https://x.com/DPamneja", name : "X/Twitter", logo : "" 
+    },
+    {
+        path : "https://www.linkedin.com/in/dhruv-pamneja-3b8432187/", name : "LinkedIn", logo : "" 
+    },
+    {
+        path : "https://medium.com/@dpamneja", name : "Medium", logo : "" 
+    },
+    {
+        path : "mailto:dpamneja@gmail.com", name : "Mail", logo : "" 
+    },
+]

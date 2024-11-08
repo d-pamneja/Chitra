@@ -2,6 +2,7 @@ import { Routes, Route } from 'react-router-dom'
 import { nav } from './structure/navigation';
 import Header from './components/Header'
 import { useAuth } from './context/AuthContext';
+import Footer from './components/Footer';
 
 
 function App() {
@@ -10,7 +11,7 @@ function App() {
   console.log("Auth Status:", auth?.isLoggedIn);
 
   return (
-    <main>
+    <main className="min-h-screen bg-[#05101c] text-white font-sans overflow-x-hidden">
       <Header />
       <Routes>
         {nav.map((r, i) => {
@@ -30,6 +31,7 @@ function App() {
             return null;
           })}
       </Routes>
+      <Footer/>
     </main>
   )
 }

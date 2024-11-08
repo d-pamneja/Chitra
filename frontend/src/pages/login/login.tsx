@@ -57,9 +57,7 @@ const Login = () => {
 
   return (
     <Box 
-      display="flex"
-      minHeight="100vh"
-      flexDirection={{ xs: 'column', md: 'row' }}
+      className='flex h-[850px] md:flex-row flex-col'
       sx={{
         background: 'radial-gradient(at 70% 51%, hsla(210, 100%, 16%, 0.5), hsl(220, 30%, 5%))',
         marginBottom: 'auto'
