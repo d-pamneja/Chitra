@@ -1,4 +1,5 @@
 import { GoogleGeminiEffectInstance } from '../components/ui/gemini-effect';
+import StackSection from '../components/ui/intro-box';
 // import { HeroHighlightInstance } from '../components/ui/highlight-text';
 
 const Home = () => {
@@ -6,8 +7,9 @@ const Home = () => {
         {/* <VortexInstance/> */}
         <GoogleGeminiEffectInstance/>
         {/* <HeroHighlightInstance/> */}
+        <StackSection/>
         <div className="h-screen">
-            BKC
+            Final Section
         </div>
     </div>
 };

@@ -18,7 +18,7 @@ export function GoogleGeminiEffectInstance() {
 
   return (
     <div
-      className="h-[150vh] bg-black w-full dark:border dark:border-white/[0.1] rounded-md relative pt-40 overflow-clip"
+      className="h-[100vh] bg-black w-full dark:border dark:border-white/[0.1] rounded-md relative pt-40 overflow-clip"
       ref={ref}
     >
       <GoogleGeminiEffect
@@ -54,7 +54,7 @@ export const GoogleGeminiEffect = ({
   return (
     <div className={cn("sticky top-80", className)}>
       <p className="text-lg md:text-7xl font-normal pb-4 text-center bg-clip-text text-transparent bg-gradient-to-b from-neutral-100 to-neutral-300">
-          Built with Google Gemini
+          Recommendations by Google Gemini
       </p>
       <p className="text-xs md:text-xl font-normal text-center text-neutral-400 mt-4 max-w-lg mx-auto">
         Unleash the power of cinema with a conversational AI that not only recommends movies but also understands your preferences, analyzes conversations, and brings you tailored insights

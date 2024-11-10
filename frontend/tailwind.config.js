@@ -53,6 +53,7 @@ module.exports = {
       animation: {
         shine: "shine 5s ease-in-out 500ms infinite",
         blink : "blink 1s infinite",
+        move: "move 5s linear infinite",
       },
       keyframes: {
         shine: {
@@ -128,7 +129,11 @@ module.exports = {
           "0%" : { opacity: 1 },
           "50%" : { opacity: 0 },
           "100%" : { opacity: 1 },
-        }
+        },
+        move: {
+          "0%": { transform: "translateX(-200px)" },
+          "100%": { transform: "translateX(200px)" },
+        },
       },
     },
   },

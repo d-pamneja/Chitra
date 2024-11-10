@@ -33,7 +33,7 @@ const Header = () => {
 
     return(
         <nav 
-            className='sticky top-0 z-50 py-3 backdrop-blur-md bg-[#0c0660] bg-opacity-70 border-b'
+            className='fixed w-full z-50 py-3 backdrop-blur-md bg-[#0c0660] bg-opacity-60 border-b'
         >
             <div className='container px-4 mx-auto relative text-sm'>
                 <div className="flex justify-between items-center">
