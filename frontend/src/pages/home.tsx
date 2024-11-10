@@ -5,12 +5,13 @@ import { StackSection } from '../components/ui/intro-box';
 const Home = () => {
     return <div>
         {/* <VortexInstance/> */}
-        <GoogleGeminiEffectInstance/>
+        
         {/* <HeroHighlightInstance/> */}
-        <StackSection/>
         <div className="h-screen">
-            Final Section
+            
         </div>
+        <GoogleGeminiEffectInstance/>
+        <StackSection/>
     </div>
 };
 

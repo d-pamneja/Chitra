@@ -1,7 +1,10 @@
 "use client";
+import AOS from "aos";
+import "aos/dist/aos.css";
 import { useScroll, useTransform,motion, MotionValue } from "framer-motion";
 import { cn } from "../../lib/utils";
-import React from "react";
+import React,{useEffect} from "react";
+
 
 export function GoogleGeminiEffectInstance() {
   const ref = React.useRef(null);
@@ -9,6 +12,7 @@ export function GoogleGeminiEffectInstance() {
     target: ref,
     offset: ["start start", "end start"],
   });
+
 
   const pathLengthFirst = useTransform(scrollYProgress, [0, 0.8], [0.2, 1.2]);
   const pathLengthSecond = useTransform(scrollYProgress, [0, 0.8], [0.15, 1.2]);
@@ -18,7 +22,7 @@ export function GoogleGeminiEffectInstance() {
 
   return (
     <div
-      className="h-[120vh] bg-black w-full dark:border dark:border-white/[0.1] rounded-md relative pt-40 overflow-clip"
+      className="h-[100vh] bg-black w-full dark:border dark:border-white/[0.1] rounded-md relative pt-40 overflow-clip"
       ref={ref}
     >
       <GoogleGeminiEffect
@@ -51,12 +55,27 @@ export const GoogleGeminiEffect = ({
   description?: string;
   className?: string;
 }) => {
+
+  useEffect(() => {
+    AOS.init({
+        duration: 1000,
+        once: true, 
+    });
+  }, []);
+
   return (
     <div className={cn("sticky top-80", className)}>
-      <p className="text-lg md:text-7xl font-normal pb-4 text-center bg-clip-text text-transparent bg-gradient-to-b from-neutral-100 to-neutral-300">
+      <p 
+        className="animate-[gradient_6s_linear_infinite] text-lg md:text-7xl font-normal pb-4 text-center bg-clip-text text-transparent bg-gradient-to-b from-neutral-100 to-neutral-300"
+        data-aos="fade-up"
+      >
           Recommendations by Google Gemini
       </p>
-      <p className="text-xs md:text-xl font-normal text-center text-neutral-400 mt-4 max-w-lg mx-auto">
+      <p 
+        className="text-xs md:text-xl font-normal text-center text-neutral-400 mt-4 max-w-lg mx-auto"
+        data-aos="fade-up"
+        data-aos-delay={200}
+      >
         Unleash the power of cinema with a conversational AI that not only recommends movies but also understands your preferences, analyzes conversations, and brings you tailored insights
       </p>
       <svg
@@ -184,6 +203,3 @@ export const GoogleGeminiEffect = ({
     </div>
   );
 };
-
-
-
