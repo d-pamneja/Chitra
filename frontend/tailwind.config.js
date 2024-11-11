@@ -31,6 +31,8 @@ module.exports = {
         nacelle: ["var(--font-nacelle)", "sans-serif"],
         mono: ["Roboto Mono", "monospace"],
         sans: ['"Work Sans"', 'sans-serif'],
+        icaRubrik: ['ICA Rubrik', 'sans-serif'],
+        poppins : ['poppins-semibold','serif']
       },
       fontSize: {
         xs: ["0.8125rem", { lineHeight: "1.5384" }],
@@ -50,6 +52,14 @@ module.exports = {
         "5xl": ["3.5rem", { lineHeight: "1", letterSpacing: "-0.0268em" }],
         "6xl": ["4rem", { lineHeight: "1", letterSpacing: "-0.0268em" }],
         "7xl": ["4.5rem", { lineHeight: "1", letterSpacing: "-0.0268em" }],
+      },
+      backgroundSize: {
+        'auto': 'auto',
+        'cover': 'cover',
+        'contain': 'contain',
+        '50%': '50%',
+        '16': '4rem',
+        'auto130' : 'auto 130%',
       },
       animation: {
         shine: "shine 5s ease-in-out 500ms infinite",
