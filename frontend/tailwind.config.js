@@ -140,6 +140,7 @@ module.exports = {
   },
   plugins: [
     require("@tailwindcss/forms"),
+    require('tailwindcss-3d'),
     addVariablesForColors,
     function ({ matchUtilities, theme }: any) {
       matchUtilities(

@@ -3,6 +3,11 @@
 # Admin Dashboard Template 
 https://github.com/satnaing/shadcn-admin
 
+# Landing Page 3D Animation Template
+https://www.youtube.com/watch?v=yqaLSlPOUxM
+
+# Chat Page Template
+https://www.youtube.com/watch?v=0yboGn8errU
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
