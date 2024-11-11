@@ -135,8 +135,12 @@ module.exports = {
           "0%": { transform: "translateX(-200px)" },
           "100%": { transform: "translateX(200px)" },
         },
+        autoRunCarousel : {
+          from : {transform : "perspective(1000px) rotateX(-16deg) rotateY(0deg)"},
+          to : {transform : "perspective(1000px) rotateX(-16deg) rotateY(360deg)"},
+        },
+        }, 
       },
-    },
   },
   plugins: [
     require("@tailwindcss/forms"),
