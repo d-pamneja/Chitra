@@ -53,7 +53,7 @@ export function ScorseseCarousel() {
 
                 <div
                     id="content"
-                    className="absolute flex flex-wrap justify-between items-center bottom-[90px] xl:left-[700px] lg:left-[500px] md:left-[375px] left-[250px] xl:min-w-[1400px] lg:min-w-[1200px] md:min-w-[1000px] min-w-[600px] h-max pb-[100px]"
+                    className="absolute flex flex-wrap justify-between items-center bottom-[90px] xl:left-[700px] lg:left-[600px] md:left-[460px] left-[250px] xl:min-w-[1400px] lg:min-w-[1200px] md:min-w-[1000px] min-w-[600px] h-max pb-[100px]"
                     style={{
                         transform : "translateX(-50%)"
                     }}

@@ -23,7 +23,7 @@ export function StackSection() {
   }, []);
 
   return (
-    <div className="flex flex-col md:flex-row justify-center items-center md:items-center space-y-6 md:space-y-0 md:space-x-20">
+    <div className="flex flex-col lg:flex-row justify-center items-center md:items-center md:space-y-0 space-y-6 md:space-x-10">
       <div 
         data-aos="zoom-in"
       >
@@ -40,7 +40,7 @@ export function StackSection() {
         data-aos="zoom-in"
         data-aos-delay={300}
       >
-        <CardContainer className="inter-var w-full md:max-w-[80rem] sm:max-w-[40em] max-w-[30em] flex-grow">
+        <CardContainer className="inter-var w-full lg:max-w-[80em] md:max-w-[60rem] sm:max-w-[40em] max-w-[30em] flex-grow">
             <CardBody className="bg-gray-50 relative group/card hover:shadow-2xl hover:shadow-emerald-500/[0.1] bg-purple-900 border-white/[0.2] w-full sm:w-[50rem] h-auto rounded-xl p-6 border">
             <InfoDescription>
                 <Pointers />
