@@ -7,26 +7,47 @@ import React, {
   useRef,
   useEffect,
 } from "react";
+import AOS from "aos";
+import "aos/dist/aos.css";
 import { cn } from "../../lib/utils.tsx";
 
 // Tech Stack Section
 
 export function StackSection() {
+
+  useEffect(() => {
+    AOS.init({
+        duration: 1000,
+        once: true, 
+    });
+  }, []);
+
   return (
     <div className="flex flex-col md:flex-row justify-center items-center md:items-center space-y-6 md:space-y-0 md:space-x-20">
-        <CardContainer className="inter-var w-full md:max-w-[20rem] flex-grow">
-            <CardBody className="bg-gray-50 relative group/card  dark:hover:shadow-2xl dark:hover:shadow-emerald-500/[0.1] dark:bg-black dark:border-white/[0.2] border-black/[0.1] w-auto sm:w-[30rem] h-auto rounded-xl p-6 border">
+      <div 
+        data-aos="zoom-in"
+      >
+        <CardContainer className="inter-var w-full md:max-w-[20rem] sm:max-w-[10em] max-w-[5em] flex-grow">
+            <CardBody 
+              className="bg-gray-50 relative group/card  dark:hover:shadow-2xl dark:hover:shadow-emerald-500/[0.1] dark:bg-black dark:border-white/[0.2] border-black/[0.1] w-auto sm:w-[30rem] h-auto rounded-xl p-6 border"
+            >
             <TSCardInstance className="" />
             </CardBody>
         </CardContainer>
+      </div>
         
-        <CardContainer className="inter-var w-full md:max-w-[80rem] flex-grow">
+      <div
+        data-aos="zoom-in"
+        data-aos-delay={300}
+      >
+        <CardContainer className="inter-var w-full md:max-w-[80rem] sm:max-w-[40em] max-w-[30em] flex-grow">
             <CardBody className="bg-gray-50 relative group/card hover:shadow-2xl hover:shadow-emerald-500/[0.1] bg-purple-900 border-white/[0.2] w-full sm:w-[50rem] h-auto rounded-xl p-6 border">
             <InfoDescription>
                 <Pointers />
             </InfoDescription>
             </CardBody>
         </CardContainer>
+      </div>
     </div>
   );
 }
