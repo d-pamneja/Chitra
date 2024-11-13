@@ -11,6 +11,8 @@ export const loginUser = async (
     }
     
     const data = await res.data;
+
+    localStorage.setItem('userID',data.id)
     return data;
 }
 
@@ -25,6 +27,7 @@ export const signUpUser = async (
     }
     
     const data = await res.data;
+    localStorage.setItem('userID',data.id)
     return data;
 }
 
@@ -38,6 +41,7 @@ export const logoutUser = async () => {
     }
 
     const data = await res.data;
+    localStorage.removeItem('userID')
     return data;
 
   };

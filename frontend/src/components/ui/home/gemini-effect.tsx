@@ -2,7 +2,7 @@
 import AOS from "aos";
 import "aos/dist/aos.css";
 import { useScroll, useTransform,motion, MotionValue } from "framer-motion";
-import { cn } from "../../lib/utils";
+import { cn } from "../../../lib/utils";
 import React,{useEffect} from "react";
 
 

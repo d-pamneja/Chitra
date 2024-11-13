@@ -65,6 +65,7 @@ export const userSignUp = async (
 
         return res.status(201).json({
             message : "New user registered",
+            id : newUser._id.toString(),
             name : newUser.name,
             email : newUser.email
         });
@@ -121,6 +122,7 @@ export const userLogIn = async (
 
         return res.status(200).json({
             message : "User successfully logged in.",
+            id : existingUser._id.toString(),
             name : existingUser.name,
             email : existingUser.email
         });
@@ -151,14 +153,15 @@ export const verifyUser = async (
                 message : "User not registered or Token malfunctioned."
             })
         }
-        console.log(existingUser._id.toString(),res.locals.jwtData.id);
+        // console.log(existingUser._id.toString(),res.locals.jwtData.id);
 
         if(existingUser._id.toString() != res.locals.jwtData.id){
             return res.status(401).send("Permissions did not match.");
         }
 
         return res.status(200).json({
-            message : "User successfully logged in.",
+            message : "User successfully verified.",
+            id : existingUser._id.toString(),
             name : existingUser.name,
             email : existingUser.email
         });

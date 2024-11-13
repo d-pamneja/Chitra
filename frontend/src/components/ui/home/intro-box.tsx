@@ -9,7 +9,7 @@ import React, {
 } from "react";
 import AOS from "aos";
 import "aos/dist/aos.css";
-import { cn } from "../../lib/utils.tsx";
+import { cn } from "../../../lib/utils.tsx";
 
 // Tech Stack Section
 

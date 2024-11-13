@@ -2,15 +2,15 @@
 import AOS from "aos";
 import "aos/dist/aos.css";
 import { useEffect } from "react";
-import infinityWar from "../../assets/carousel/infinity-war-poster-1.jpg"
-import endgame from "../../assets/carousel/endgame-poster-1.jpg"
-import creed1 from "../../assets/carousel/creed-1-poster-1.jpg"
-import creed2 from "../../assets/carousel/creed-2-poster-1.jpg"
-import deadpool2 from "../../assets/carousel/deadpool-2-poster-1.jpg"
-import hobbs from "../../assets/carousel/hobbs-shaw-poster-1.jpg"
-import panther from "../../assets/carousel/panther-poster-1.jpg"
-import ragnorok from "../../assets/carousel/ragnorok-poster-1.jpg"
-import scorsese from "../../assets/carousel/scorsese.png"
+import infinityWar from "../../../assets/carousel/infinity-war-poster-1.jpg"
+import endgame from "../../../assets/carousel/endgame-poster-1.jpg"
+import creed1 from "../../../assets/carousel/creed-1-poster-1.jpg"
+import creed2 from "../../../assets/carousel/creed-2-poster-1.jpg"
+import deadpool2 from "../../../assets/carousel/deadpool-2-poster-1.jpg"
+import hobbs from "../../../assets/carousel/hobbs-shaw-poster-1.jpg"
+import panther from "../../../assets/carousel/panther-poster-1.jpg"
+import ragnorok from "../../../assets/carousel/ragnorok-poster-1.jpg"
+import scorsese from "../../../assets/carousel/scorsese.png"
 
 
 export function ScorseseCarousel() {
@@ -25,7 +25,7 @@ export function ScorseseCarousel() {
       }, []);
 
     return (
-        <div className="h-[1300px] flex items-center justify-center text-white mb-[-350px]">
+        <div className="h-[1200px] flex items-center justify-center text-white mb-[-300px]">
             <div 
                 id="banner" 
                 className="relative w-full h-[100vh] text-center"
@@ -53,7 +53,7 @@ export function ScorseseCarousel() {
 
                 <div
                     id="content"
-                    className="absolute flex flex-wrap justify-between items-center bottom-[90px] xl:left-[700px] lg:left-[600px] md:left-[460px] left-[250px] xl:min-w-[1400px] lg:min-w-[1200px] md:min-w-[1000px] min-w-[600px] h-max pb-[100px]"
+                    className="absolute flex flex-wrap justify-between items-center bottom-[90px] xl:left-[700px] lg:left-[600px] md:left-[460px] left-[350px] xl:min-w-[1400px] lg:min-w-[1200px] md:min-w-[1000px] min-w-[600px] h-max pb-[100px]"
                     style={{
                         transform : "translateX(-50%)"
                     }}
