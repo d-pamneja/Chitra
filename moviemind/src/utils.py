@@ -62,7 +62,7 @@ def is_movie_recommendation_query(query,prompts):
     
 
 # Movie Recommendation System
-keyword_data_path = "/Users/dhruv/Desktop/Machine_Learning/Projects/Chitra_Movie_Bot/moviemind/CHROMA_DATABASE"
+keyword_data_path = "//Users/dhruv/Desktop/Devlopment/Projects/Chitra/moviemind/CHROMA_DATABASE"
 client_key = chromadb.PersistentClient(path = keyword_data_path)
 movie_collection = client_key.get_collection("MOVIES")
 
@@ -107,7 +107,7 @@ def find_similar_movies(movie_title, data, movie_collection, top_k=6):
         raise CustomException(e1,sys)
     
 
-database = "/Users/dhruv/Desktop/Machine_Learning/Projects/Chitra_Movie_Bot/moviemind/SQL_Database/Movies.db"
+database = "/Users/dhruv/Desktop/Devlopment/Projects/Chitra/moviemind/SQL_Database/Movies.db"
 database_key_based = pd.read_sql("SELECT m.* FROM Movies_Key_Based AS m", sqlite3.connect(database))
 database_query_based = pd.read_sql("SELECT m.* FROM Movies_Database AS m", sqlite3.connect(database))
 
@@ -148,7 +148,7 @@ def process_sql_query(sql_command,db):
     
 
 
-query_based_keywords = ['genre', 'genres', 'cast', 'actor', 'actress', 'keyword','in it','in them','type','kind']
+query_based_keywords = ['genre', 'genres', 'cast', 'actor', 'actress', 'keyword','keywords','in it','in them','type','kind']
 title_based_keywords = ["title","similar","like"]
 
 
@@ -170,6 +170,80 @@ def subArray(arr1,arr2):
             return False
         
     return True
+
+def safe_json_string(output):
+    output = re.sub(r'^[`\\]*(json)?[`\\]*|[`\\]*(json)?[`\\]*$', '', output, flags=re.IGNORECASE).strip()
+    logging.info(f"Cleaned Response from LLM : {output}")
+    
+    try:
+        return json.loads(output)
+    except json.JSONDecodeError:
+        raise ValueError("Output could not be safely converted to JSON")
+
+
+def handle_multi_criteria_search(model, prompts, response_level1, all_movies, safe):
+    response_level2 = model.generate_content([prompts[3], response_level1.text], safety_settings=safe)
+    logging.info(f"Initial Response from LLM (Level 2): {response_level2.text}")    
+
+    criteria = safe_json_string(response_level2.text)
+    final_movie_titles = []
+
+    if "cast" in criteria and criteria["cast"]:
+        final_movie_titles += handle_cast_based_search_L2(criteria["cast"], all_movies)
+
+    if "genres" in criteria and criteria["genres"]:
+        final_movie_titles += handle_genre_based_search_L2(criteria["genres"], all_movies)
+
+    if "keywords" in criteria and criteria["keywords"]:
+        final_movie_titles += handle_keywords_based_search_L2(criteria["keywords"], all_movies)
+          
+
+    return final_movie_titles
+
+def handle_genre_based_search_L2(query_genre, movies):
+    """
+    Filters movies based on genre.
+    """
+    
+    filtered_movies = []
+    for movie in movies:
+        current_movie_genre = [genre.lower() for genre in eval(movie[4])]
+        if subArray(eval(query_genre), current_movie_genre):
+            movie_details = {'title': movie[2], 'keywords': movie[8], 'review_summary': movie[11]}
+            filtered_movies.append(movie_details)
+    
+    logging.info(f"Movies found for genres {query_genre}.")
+    return filtered_movies
+
+
+def handle_keywords_based_search_L2(query_keywords, movies):
+    """
+    Filters movies based on keywords.
+    """
+    filtered_movies = []
+    for movie in movies:
+        current_movie_keywords = [keyword.lower() for keyword in eval(movie[8])]
+        if subArray(eval(query_keywords), current_movie_keywords):
+            movie_details = {'title': movie[2], 'keywords': movie[8], 'review_summary': movie[11]}
+            filtered_movies.append(movie_details)
+    
+    logging.info(f"Movies found for keywords {query_keywords}.")
+    return filtered_movies
+
+def handle_cast_based_search_L2(query_cast, movies):
+    """
+    Filters movies based on cast.
+    """
+    filtered_movies = [] 
+    for movie in movies:
+        current_movie_cast = [cast.lower() for cast in eval(movie[6])]
+        if subArray(eval(query_cast), current_movie_cast):
+            movie_details = {'title': movie[2], 'keywords': movie[8], 'review_summary': movie[11]}
+            filtered_movies.append(movie_details)
+    
+    logging.info(f"Movies found for cast {query_cast}.")
+    return filtered_movies
+
 
 
 def get_gemini_response(question,prompts,database_query_based,database_key_based,movie_collection):
@@ -230,65 +304,28 @@ def get_gemini_response(question,prompts,database_query_based,database_key_based
             logging.info("SQL Query detected.")
             return response_level1.text.replace('\n', '').replace(';', '')
         
-        all_movies = database_query_based.values
         
         # Handle specific-based searches (genre, cast, keyword) from SQL Database
-        for query_keyword in query_based_keywords:
-            if(query_keyword in question.lower()):
-                if(query_keyword == "genres" or query_keyword.lower() == "genre"):
-                    response_level2 = model.generate_content([prompts[3],response_level1.text],safety_settings = safe)
-                    logging.info(f"Response from LLM (Level 2): {response_level2.text}")
-                    query_genres = [genre.lower() for genre in eval(response_level2.text)]
-                    
-                    final_movie_titles = []
-                    for movie in all_movies:
-                        current_movie_genre = [genre.lower() for genre in eval(movie[4])]
-                        if(subArray(query_genres,current_movie_genre)==True):
-                            movie_details = {'title' : movie[2], 'keywords' : movie[8], 'review_summary' : movie[11]}
-                            final_movie_titles.append(movie_details)
-                        
-                    logging.info(f"Movies found for genres {query_genres}.")
-                    return final_movie_titles[:10]
-                
-                elif(query_keyword.lower() == "cast" or query_keyword.lower() == "actor" or query_keyword.lower() == "actress" or query_keyword.lower() == "in it" or query_keyword.lower() == "in them"):
-                    response_level2 = model.generate_content([prompts[3],response_level1.text],safety_settings = safe)
-                    logging.info(f"Response from LLM (Level 2): {response_level2.text}")
-                    query_cast = [cast.lower() for cast in  eval(response_level2.text)]
-                    
-                    final_movie_titles = [] 
-                    for movie in all_movies:
-                        current_movie_cast = [cast.lower() for cast in eval(movie[6])]
-                        if(subArray(query_cast,current_movie_cast)==True):
-                            movie_details = {'title' : movie[2], 'keywords' : movie[8], 'review_summary' : movie[11]}
-                            final_movie_titles.append(movie_details)
-                        
-                    logging.info(f"Movies found for cast {query_cast}.")
-                    return final_movie_titles[:10]
-                
-                elif(query_keyword.lower() == "keyword" or query_keyword.lower() == "type" or query_keyword.lower() == "kind"):
-                    response_level2 = model.generate_content([prompts[3],response_level1.text],safety_settings = safe)
-                    logging.info(f"Response from LLM (Level 2): {response_level2.text}")
-                    query_keywords = [keyword.lower() for keyword in eval(response_level2.text)]
-                    
-                    final_movie_titles = []
-                    for movie in all_movies:
-                        current_movie_keywords = [keyword.lower() for keyword in eval(movie[8])]
-                        if(subArray(query_keywords,current_movie_keywords)==True):
-                            movie_details = {'title' : movie[2], 'keywords' : movie[8], 'review_summary' : movie[11]}
-                            final_movie_titles.append(movie_details)
-                        
-                    logging.info(f"Movies found for keywords {query_keywords}.")
-                    return final_movie_titles[:10]
+        if any(keyword in question.lower() or keyword in response_level1.text.lower() for keyword in query_based_keywords):
+            all_movies = database_query_based.values
+            return handle_multi_criteria_search(model, prompts, response_level1, all_movies, safe)[:10]
                 
                 
         # Handle title-based searches from Chroma Database
         for query_keyword in title_based_keywords:
-            if(query_keyword.lower() in question.lower()):
-                response_level2 = model.generate_content([prompts[3],response_level1.text],safety_settings = safe)
+            if query_keyword.lower() in question.lower():
+                response_level2 = model.generate_content([prompts[3], response_level1.text], safety_settings=safe)
                 logging.info(f"Response from LLM (Level 2): {response_level2.text}")
-                query_title = eval(response_level2.text)[0]
                 
-                return find_similar_movies(query_title,database_key_based,movie_collection,6)    
+                try:
+                    criteria = json.loads(response_level2.text)
+                    query_title = criteria.get("title")
+                    
+                    if query_title:
+                        return find_similar_movies(query_title, database_key_based, movie_collection, 6)
+                except json.JSONDecodeError:
+                    logging.error("Failed to parse Level 2 response as JSON.")
+                    return []  
             
     except Exception as e1:
         raise CustomException(e1,sys)
@@ -350,14 +387,14 @@ def is_movie_discussion_query(query,prompts):
     except Exception as e1:
         raise CustomException(e1,sys)
     
-def get_movie_title(query,prompts,context_movie_title=None):
+def get_movie_title(query,prompts,context_movie_title):
     """
     Function to extract the movie title from the discussion question using the Gemini LLM model.
     
     Args:
         query (str): The query to be classified.
         prompts (list): The list of prompt templates for the LLM.
-        context_movie_title (str): The context movie title, by default None.
+        context_movie_title (str): The context movie title
         
     Returns:
         str: The title of the movie.

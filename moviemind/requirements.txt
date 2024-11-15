@@ -17,7 +17,7 @@ cachetools==5.3.3
 certifi==2024.6.2
 cffi==1.16.0
 charset-normalizer==3.3.2
--e git+https://github.com/d-pamneja/Chitra_Movie_Bot.git@8fefdc8297f53de9e1e45e61ffecfecbf0a4c06a#egg=Chitra_Movie_Bot_Gemini
+-e git+https://github.com/d-pamneja/Chitra.git@8fefdc8297f53de9e1e45e61ffecfecbf0a4c06a#egg=Chitra_Movie_Bot_Gemini
 chroma-hnswlib==0.7.3
 chromadb==0.5.3
 click==8.1.7

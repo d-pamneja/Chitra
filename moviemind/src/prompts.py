@@ -6,7 +6,7 @@ prompts = [
 
     \n1. True : If the message indicates a request for movie recommendations based on specific criteria like genre, actors, directors, keywords, or title similarity. If it says words like "recommend", "suggest", "show me", "movies with", "similar to", etc. This means the user is looking for movie recommendations based on specific criteria.
 
-    \n2. False :  If the message is a general comment, question, or statement related to movies but not a direct request for recommendations. This means something more abstract
+    \n2. False :  If the message is a general comment, question, or statement related to movies but not a direct request for recommendations. This means something more abstract. Basically, if it is NOT INQUIRING about movie recommendations based on specific criteria, it is False.
 
     Basically, the whole idea is to check whether the user is asking for a movie recommendation or not. Here are some examples to guide you:
 
@@ -24,6 +24,8 @@ prompts = [
     | "Can you suggest movies with strong female leads?"                         | movie_query           |
     | "What's your favorite movie of all time?"                                 | general_conversation |
     | "Recommend me some movies with high ratings and positive reviews."         | movie_query           |
+    | "sure recommend me some movies in the action genre"                        | movie_query          |
+    | "recommend movies with good romance in it "                                 | movie_query          |
 
     Please note that the user's queries can vary in complexity and specificity. Be prepared to handle a wide range of requests. You will be given a query based on 
     which you have to classify the message into one of the above categories.
@@ -165,98 +167,99 @@ prompts = [
     
         GENRES = ['Sci-Fi']
         
+    \n Note : In case of cast, even if the cast members name's starting letter for name and surname is in lowercase, by default convert it to upper case, some examples have been given below for your understanding. 
     \n\nTake this for an example. If the text says, "Recommend me some movies with Tom Hanks in it", the string output command for that is :
     
         CAST = ['Tom Hanks']
         
-    \n\nTake this for an example. If the text says, "Movies having Margot Robbie and Will Smith in it's cast", the string output command for that is :
+    \n\nTake this for an example. If the text says, "Movies having margot robbie and will smith in it's cast", the string output command for that is :
     
         CAST = ['Margot Robbie', 'Will Smith']
         
-    \n\nTake this for an example. If the text says, "Show some movies with Tom Hanks and Leonardo DiCaprio in them", the string output command for that is :
+    \n\nTake this for an example. If the text says, "Show some movies with Tom Hanks and leonardo dicaprio in them", the string output command for that is :
     
         CAST = ['Tom Hanks', 'Leonardo DiCaprio']
         
-    \n\nTake this for an example. If the text says, "Recommend me some movies with superhero and aliens type",(you have to understand that the user's intent here is a bit specific than abstract, so it lies more in keywords than genre) the string output command for that is :
+    \n\nTake this for an example. If the text says, "Recommend me some movies with superhero and aliens type",(you have to understand that the user's intent here is a bit specific than abstract, so it lies more in keywords than cast and genre) the string output command for that is :
     
         KEYWORDS = ['superhero', 'aliens']
         
-    \n\nTake this for an example. If the text says, "I am in the mood for seeing kind of movies with a female protaganist",(you have to understand that the user's intent here is a bit specific than abstract, so it lies more in keywords than genre) the string output command for that is :
+    \n\nTake this for an example. If the text says, "I am in the mood for seeing kind of movies with a female protaganist",(you have to understand that the user's intent here is a bit specific than abstract, so it lies more in keywords than cast and genre) the string output command for that is :
     
         KEYWORDS = ['female protaganist']
         
-    \n\nTake this for an example. If the text says, "show me some movies of angry protaganist kind",(you have to understand that the user's intent here is a bit specific than abstract, so it lies more in keywords than genre) the string output command for that is :
+    \n\nTake this for an example. If the text says, "show me some movies of angry protaganist kind",(you have to understand that the user's intent here is a bit specific than abstract, so it lies more in keywords than cast and genre) the string output command for that is :
     
         KEYWORDS = ['angry protaganist']
         
-    \n\nTake this for an example. If the text says, "How about some movies with battle in keywords?",(you have to understand that the user's intent here is a bit specific than abstract, so it lies more in keywords than genre) the string output command for that is :
+    \n\nTake this for an example. If the text says, "How about some movies with battle in keywords?",(you have to understand that the user's intent here is a bit specific than abstract, so it lies more in keywords than cast and genre) the string output command for that is :
     
         KEYWORDS = ['battle']
-    
-      
+        
     \n\nAlso, make sure that the SQL code / stirng output does not have ``` in the beginning or the end of your answer, and it should'nt even have "" anywhere in the beginning or end of the answer.
     Also, the word "SQL" or any other words should not be present in your output, apart from the relevant format. Even the symbol of skipping a line
     like should not be present in your output. Just the commands or output as you have been shown above in the examples.
     Just the commands or output as you have been shown above in the examples.
     """,
     """
-    You are an expert in variable declaration and handling in Python. Here, you have been a variable and their values.
-    Whenever you are given a text query, you have to convert the values of a text query as a string.
-    Now, this string is suppose to later converted to a list of strings. You have to make sure that the string is in the correct format.
-    Below given are a few examples of how you can convert the text query into a string. You will generally be given a text query with 
-    variable names from "TITLE","GENRES","CAST", "KEYWORDS" and you have to convert their values into a string of lists.
+    You are an expert in variable declaration and handling in Python. Here, you have been a variable(s) and their values.
+    Whenever you are given a text query, you have to convert the values of a text query as a string of JSON.
+    Now, this string is suppose to later converted to a JSON, where each key is a list of strings. You have to make sure that the string is in the correct format.
+    Below given are a few examples of how you can convert the text query into a string which is a JSON. You will generally be given a text query with 
+    variable names from either or all "TITLE","GENRES","CAST", "KEYWORDS" and you have to convert their values into a string of lists.
     
     
     \n\nTake this for an example. If the text says, "TITLE = ['Guardians of the Galaxy Vol. 2']", the string output command for that is :
-        ['Guardians of the Galaxy Vol. 2']
+        {"title":"['Guardians of the Galaxy Vol. 2']"}
     
     \n\nTake this for an example. If the text says, "TITLE = ['Avengers : Infinity War']", the string output command for that is :
-        ['Avengers : Infinity War']
+        {"title":"['Avengers : Infinity War']"}
     
     \n\nTake this for an example. If the text says, "GENRES = ['Comedy']", the string output command for that is :
-        ['Comedy']
+        {"genres":"['Comedy']"}
         
     \n\nTake this for an example. If the text says, "GENRES = ['Action', 'Adventure']", the string output command for that is :
-        ['Action', 'Adventure']
+        {"genres":"['Action', 'Adventure']"}
         
     \n\nTake this for an example. If the text says, "GENRES = ['Comedy','Romance']", the string output command for that is :
-        ['Comedy','Romance']
+        {"genres":"['Comedy','Romance']"}
         
     \n\nTake this for an example. If the text says, "GENRES = ['Romance']", the string output command for that is :
-        ['Romance']
+        {"genres":"['Romance']"}
         
     \n\nTake this for an example. If the text says, "GENRES = ['Sci-Fi']", the string output command for that is :
-        ['Sci-Fi']
+        {"genres":"['Sci-Fi']"}
         
     \n\nTake this for an example. If the text says, "GENRES = ['Action']", the string output command for that is :
-        ['Action']
+        {"genres":"['Action']"}
         
-    \n\nTake this for an example. If the text says, "CAST = ['Tom Hanks']", the string output command for that is :
-        ['Tom Hanks']
+    \n\nTake this for an example. If the text says, "CAST = ['Tom Hanks']",the string output command for that is :
+        {"cast":"['Tom Hanks']"}
         
     \n\nTake this for an example. If the text says, "CAST = ['Margot Robbie', 'Will Smith']", the string output command for that is :
-        ['Margot Robbie', 'Will Smith']
+        {"cast":"['Margot Robbie', 'Will Smith']"}
         
     \n\nTake this for an example. If the text says, "CAST = ['Tom Hanks', 'Leonardo DiCaprio']", the string output command for that is :
-        ['Tom Hanks', 'Leonardo DiCaprio']
+        {"cast":"['Tom Hanks', 'Leonardo DiCaprio']"}
         
     \n\nTake this for an example. If the text says, "KEYWORDS = ['superhero', 'aliens']", the string output command for that is :
-        ['superhero', 'aliens']
+        {"keywords":"['superhero', 'aliens']"}
         
     \n\nTake this for an example. If the text says, "KEYWORDS = ['female protaganist']", the string output command for that is :
-        ['female protaganist']
+        {"keywords":"['female protaganist']"}
         
     \n\nTake this for an example. If the text says, "KEYWORDS = ['angry protaganist']", the string output command for that is :
-        ['angry protaganist']
+        {"keywords":"['angry protaganist']"}
         
     \n\nTake this for an example. If the text says, "KEYWORDS = ['battle']", the string output command for that is :
-        ['battle']
+        {"keywords":"['battle']"}
         
-    \n\nRemember, the output should be a string and not a list. The list is just for your understanding. The output should be a string, which will be 
-    converted to a list later on using "eval()" in Python, so the output should NOT have  ``` OR python or any other extra symbols in it's output.
+    \n\nRemember, the output should be a string of JSON nothing else. The list is just for your understanding. The output should be a string, which will be 
+    converted to a JSON using "json.loads" and then lists will be extracted from it using "eval()" in Python (hence the list should also be in a string as shown in example above), so the output should NOT have  ``` OR python or any other extra symbols in it's output.
     MAKE SURE IT IS A STRING OUTPUT ONLY, AS YOUR RESPONSE WILL BE WORKED ON LATER ON PYTHON FUNCTIONS.
-    Also, make sure that the string output does not have ``` in the beginning or the end of your answer. Also, the word "STRING" or any
-    other words should not be present in your output. Just the commands or output as you have been shown above in the examples.
+    \n\n
+    Also, make sure that the string output DOES NOT have ``` in the beginning or the end of your answer. Also, the word "STRING" or "JSON" or "LIST" or any
+    other words should not be present in your output. Just the commands or output as you have been shown above in the examples. The output should be a string of JSON, nothing else.
     """,
     """
     You will be given a user message as input. Your task is to classify the message into one of the following categories:
@@ -295,7 +298,8 @@ prompts = [
     This string will be matched with a local function, so make sure to return one of the exact string as mentioned above.
     """,
     """
-    You are an expert in extracting the movie title from a user query. Here, you will be given a user query as input, and you have to extract the movie title from it. The movie title can be any movie name, and it can be present anywhere in the query. You have to extract the movie title and return it as a string. Here are some examples to guide you:
+    You are an expert in extracting the movie title from a user query. Here, you will be given a user query as input, and you have to extract the movie title from it. The movie title can be any movie name, and it can be present anywhere in the query. 
+    You have to extract the movie title and return it as a string. Here are some examples to guide you:
     \n
     \t1. "Discuss the themes and plots in Fast and the Furious"
     \tAns. Fast and the Furious
@@ -322,7 +326,8 @@ prompts = [
     \tAns. The Lord of the Rings: The Return of the King
     
     \n\nAs you can see, the movie title can be present anywhere in the query, and it can be followed by a colon, a full stop, or a comma. Even can be present in the middle of the query. You need to be smart in extracting the movie name from the query.
-    However, there is an edge case, if any given query DOES NOT have a movie title in it, you have to return "None" as the output. If you cannot find any movie title in the query, you have to return "None" as the output, DO NOT GIVE ANY OTHER OUTPUT OR EXPLANATION. Just return "None" as the output.
+    Note that will be cases where there is no movie title, and the query is just a general statement or question or even "". In such cases, you have to return "None" or "" as the output.
+    However, there is an edge case, if any given query DOES NOT have a movie title in it, you have to return "None" or "" as the output. If you cannot find any movie title in the query, you have to return "None" or "" as the output, DO NOT GIVE ANY OTHER OUTPUT OR EXPLANATION. Just return "None" or "" as the output.
     Now, make sure you extract the movie name correctly, and return it **as a string with no extra spaces or characters before or after the title**. It should be exactly the same as the movie name in the query, without any surrounding characters or quotes. 
     """
 ]

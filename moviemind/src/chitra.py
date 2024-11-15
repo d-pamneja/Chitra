@@ -1,19 +1,19 @@
 #Importing all the dependencies
 from src.dependencies import *
 
-# Defining the Chitra class
+# Defining the Chitra class (Parent Movie Bot)
 class Chitra:
     """
     A class to represent the Chitra Movie Bot. This class is responsible for handling the interactions with the GenerativeAI model.
     Attributes:
-    1. model_name : str
-        The name of the model to be used.
-    2. generation_config : dict
-        The generation configuration for the model.
-    3. safety_settings : dict
-        The safety settings for the model.
-    4. system_instruction : str
-        The system instruction for the model.
+        1. model_name : str
+            The name of the model to be used.
+        2. generation_config : dict
+            The generation configuration for the model.
+        3. safety_settings : dict
+            The safety settings for the model.
+        4. system_instruction : str
+            The system instruction for the model.
     """
     
     def __init__(self, model_name, generation_config, safety_settings, system_instruction):
@@ -23,8 +23,9 @@ class Chitra:
             safety_settings=safety_settings,
             system_instruction=system_instruction
         )
-        self.context_movie_title = None
+        self.context_movie_title = ""
         self.chat_session = self.model.start_chat()
+        self.chat_history = []
         
     def start_chat(self):
         """
@@ -59,3 +60,25 @@ class Chitra:
         response = self.chat_session.send_message(full_message)
 
         return response
+    
+    def store_chat_history(self, message, response):
+        """
+        A method to store the chat history in the current chat session.
+        
+        Parameters:
+            1. message : str
+                The message sent to the model.
+            2. response : str
+                The response from the model.
+            """
+        self.chat_history.append({"user":message,"chitra":response})
+        
+        
+    def get_chat_history(self):
+        """
+        A method to get the chat history in the current chat session.
+        
+        Returns:
+        The chat history in the current chat session.
+        """
+        return self.chat_history

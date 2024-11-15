@@ -78,11 +78,11 @@ class ConversationAnalysisResponse(BaseModel):
 
 
 # Load Data (ChromaDB and SQLite)
-keyword_data_path = "/Users/dhruv/Desktop/Machine_Learning/Projects/Chitra_Movie_Bot/moviemind/CHROMA_DATABASE" 
+keyword_data_path = "/Users/dhruv/Desktop/Devlopment/Projects/Chitra/moviemind/CHROMA_DATABASE" 
 client_key = chromadb.PersistentClient(path=keyword_data_path)
 movie_collection = client_key.get_collection("MOVIES")
 
-database = "/Users/dhruv/Desktop/Machine_Learning/Projects/Chitra_Movie_Bot/moviemind/SQL_Database/Movies.db"
+database = "/Users/dhruv/Desktop/Devlopment/Projects/Chitra/moviemind/SQL_Database/Movies.db"
 database_key_based = pd.read_sql_query("SELECT m.* FROM Movies_Key_Based AS m", sqlite3.connect(database))
 database_query_based = pd.read_sql_query("SELECT m.* FROM Movies_Database AS m", sqlite3.connect(database))
 
@@ -121,9 +121,6 @@ chitra = Chitra(
     ],
     system_instruction = system_instructions[0]
 )
-
-global_chat_history = []
-
 
 # Create the Movie Discussion Bot Instance
 movie_discussion = genai.GenerativeModel(
@@ -217,7 +214,7 @@ async def chat(query: ChitraQuery = Body(...)):
                 
                 if(not movie_title or not is_valid_movie(movie_title)):
                     if(not chitra.context_movie_title):
-                        chitra.context_movie_title = None
+                        chitra.context_movie_title = ""
                     else:
                         movie_title = chitra.context_movie_title
                 else:
@@ -248,7 +245,7 @@ async def chat(query: ChitraQuery = Body(...)):
                     
                 if(not movie_title or not is_valid_movie(movie_title)):
                     if(not chitra.context_movie_title):
-                        chitra.context_movie_title = None
+                        chitra.context_movie_title = ""
                     else:
                         movie_title = chitra.context_movie_title
                 else:
@@ -273,7 +270,7 @@ async def chat(query: ChitraQuery = Body(...)):
                 raise HTTPException(status_code=400, detail=str(e)) 
             
         else:
-            chitra.context_movie_title = None
+            chitra.context_movie_title = ""
             try:
                 chitra_response = chitra.send_message(query.question)
             except requests.exceptions.RequestException as e:
@@ -282,7 +279,8 @@ async def chat(query: ChitraQuery = Body(...)):
                 raise HTTPException(status_code=400, detail=str(e)) 
 
 
-        global_chat_history.append({"user": query.question, "chitra": chitra_response.text})
+        # global_chat_history.append({"user": query.question, "chitra": chitra_response.text})
+        chitra.store_chat_history(query.question, chitra_response.text)
         return {"type": "text", "data": chitra_response.text}
 
     except CustomException as e:
@@ -294,15 +292,15 @@ async def chat(query: ChitraQuery = Body(...)):
 @app.get("/chat_history", response_model=List[Dict[str, str]])
 async def get_chat_history():
     """
-    Returns the chat history of the Chitra bot.
+    Returns the chat history of the Chitra bot for the current instance
 
     Raises:
-        HTTPException (404 Not Found): If there is no chat history available.
+        HTTPException (404 Not Found): If there is no chat history available for the current instance
     """
-    if not global_chat_history:  
-        raise HTTPException(status_code=404, detail="No chat history available.")
+    if not chitra.chat_history:  
+        raise HTTPException(status_code=404, detail="No chat history available in current instance.")
 
-    return global_chat_history
+    return chitra.get_chat_history()
 
 @app.get("/current_movie", response_model=str)
 async def get_current_movie():
@@ -322,7 +320,6 @@ async def get_current_movie():
 async def handle_movie_query(query: MovieQuery = Body(...)):
     """Processes movie queries, returning recommendations or SQL results."""
     try:
-        logging.info(f"Idhar Hoon Gandu")
         result = get_gemini_response(query.question, prompts, database_query_based, database_key_based, movie_collection)
         processed_results = process_sql_query(result, database)
 
